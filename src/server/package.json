@@ -1,0 +1,40 @@
+{
+  "name": "secretmemos",
+  "version": "1.0.0",
+  "description": "Secret memos and password container",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "devStart": "nodemon  server.js"
+  },
+  "nodemonConfig": {
+    "events": {
+      "start": "cls & echo --------------------\n"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bbbnova/SecretMemos.git"
+  },
+  "keywords": [
+    "secret",
+    "password",
+    "notes",
+    "passwords",
+    "manager",
+    "security"
+  ],
+  "author": "bbbnova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bbbnova/SecretMemos/issues"
+  },
+  "homepage": "https://github.com/bbbnova/SecretMemos#readme",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.6.1",
+    "pkcs7-padding": "^0.1.1"
+  }
+}
