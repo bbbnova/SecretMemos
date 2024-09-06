@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="scripts/cryptography.js"></script>
+    
+</head>
+<body>
+    <script>
+        function decrypt() {
+            window.crypto.subtle.generateKey(
+                {
+                    name: "PBKDF2",
+                },
+                false, //whether the key is extractable (i.e. can be used in exportKey)
+                ["deriveKey", "deriveBits"] //can be any combination of "deriveKey" and "deriveBits"
+            )
+            .then(function(key){
+                //returns a key object
+                console.log(key);
+            }) 
+            .catch(function(err){
+                console.error(err);
+            });
+        }
+    </script>
+
+    <h1>Home page</h1>
+    <p>Server running on port: <%= message %></p>
+
+    <textarea id="text" name="data" rows="15" cols="100">
+        <%= data %>
+    </textarea>
+    <button onclick="decrypt()">Decrypt</button>
+</body>
+
+
+</html>

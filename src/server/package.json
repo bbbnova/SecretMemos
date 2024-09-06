@@ -5,9 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "devStart": "nodemon  server.js"
+    "devStart": "nodemon server.js"
   },
-  "nodemonConfig": {
+  "@nodemonConfig": {
     "events": {
       "start": "cls & echo --------------------\n"
     }
