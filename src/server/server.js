@@ -22,9 +22,7 @@ app.use('/api/user', userRouter);
 const User = require('../server/models/userModel');
 const secretModule = require('../server/secretModule');
 app.get('/user', async (req, res) => {
-    let name = req.query.name;
-    console.log('query name: ' + name);
-    
+    let name = req.query.name;    
     let user = await User.findOne({
         name: name
     });
@@ -32,8 +30,9 @@ app.get('/user', async (req, res) => {
     secretModule.decrypt(user.encryptedMemos, 'v1126v', (err, result) => {
         result = result.slice(0, -1);
         let memos = JSON.parse(result);
+        
         res.render('pages/home', { message: process.env.PORT, data: user.encryptedMemos});
-    });
+    }); 
     
 });
 
