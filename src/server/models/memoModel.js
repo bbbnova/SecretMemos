@@ -1,32 +1,33 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-    name: String,
-    userId: String,
+const memoSchema = new mongoose.Schema({
+    accountName: String,
+    memoId: String,
+    category: String,
+    applicationName: String,
     email: String,
-    passwordHash: String,
-    isEnabled: Boolean,
-    memos: [{
+    password: String,
+    url: String,
+    note: String,
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Memo'
-    }],
-    notes: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Note'
-    }],
+      ref: 'User'
+    },
     createdAt: {
       type: Date,
       default: Date.now
     },
-    mofifiedAt: {
+    modifiedAt: {
       type: Date,
       default: Date.now
     },
     version: Number
   });
+
 // userSchema.virtual("regQueryId")
 //   .get(function() { return JSON.parse(this.lastSecret).regQueryId.toString(); })
 //   .set(function(val) {
 //   });
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+
+const Memo = mongoose.model('Memo', memoSchema);
+module.exports = Memo;

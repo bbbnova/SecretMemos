@@ -1,0 +1,76 @@
+const User = require('../../models/userModel');
+const Memo = require('../../models/memoModel');
+const secretModule = require('../../secretModule');
+
+const { ObjectId } = require('mongodb');
+
+const addUser = async (req, res) => {
+
+    let memos;
+
+    await secretModule.decrypt(req.body.encryptedMemos, 'v1126v', (err, memosResult) => {
+        if(!err) {
+            memos = JSON.parse(memosResult);
+        }
+        else{
+            console.log(err.message);
+            return;
+        }
+    }); 
+
+    let user = await User.create({
+        name: req.body.name,
+        userId: req.body.userId,
+        email: req.body.email,
+        passwordHash: req.body.passwordHash,
+        isEnabled: req.body.isEnabled,
+        createdAt: req.body.createdAt,
+        modifiedAt: req.body.modifiedAt,
+        version: 1
+    });
+
+    memos.forEach(async m => {
+        let memo = await Memo.create({
+            accountName: m.AccountName,
+            memoId: m.MemoId,
+            category: m.Category,
+            applicationName: m.ApplicaionName,
+            email: m.Email,
+            password: m.Password,
+            url: m.Url,
+            note: m.Note,
+            user: user._id
+        });
+
+        user.memos.push(memo);
+    });
+
+    await user.save();
+
+    if(user) {
+        console.log(user.name + ' added with ' + user.memos.length + ' memos.')
+        res.status(200).json({
+            "message": "User added.",
+            "user name": user.name,
+            "memos count" : user.memos.length
+        })
+    }
+}
+
+
+const getUser = async (req, res) => {
+    let user = await User.findOne({
+        name: 'bbbnova'
+    });
+
+    await user.populate('memos');
+    
+    res.status(200).json({
+        "_id": user._id,
+        "memos": user.memos
+    });
+}
+
+
+
+module.exports = { addUser, getUser };
