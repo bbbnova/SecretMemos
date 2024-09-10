@@ -7,12 +7,13 @@ const noteSchema = new mongoose.Schema({
     description: String,
     number: Number,
     pages: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Page'
+      type: mongoose.Types.ObjectId,
+      ref: "Page"
     }],
     user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true
     },
     createdAt: {
       type: Date,

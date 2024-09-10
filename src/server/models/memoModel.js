@@ -10,8 +10,8 @@ const memoSchema = new mongoose.Schema({
     url: String,
     note: String,
     user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      type: mongoose.Types.ObjectId,
+      ref: "User"
     },
     createdAt: {
       type: Date,

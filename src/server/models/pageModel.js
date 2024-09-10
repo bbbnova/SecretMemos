@@ -5,9 +5,15 @@ const pageSchema = new mongoose.Schema({
     title: String,    
     content: String,
     number: Number,
-    page: {
+    note: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Page'
+      ref: 'Note',
+      required: true
+    },
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true
     },
     createdAt: {
       type: Date,

@@ -6,69 +6,77 @@ const { ObjectId } = require('mongodb');
 
 const addUser = async (req, res) => {
 
-    let memos;
-
-    await secretModule.decrypt(req.body.encryptedMemos, 'v1126v', (err, memosResult) => {
+    secretModule.decrypt(req.body.encryptedMemos, 'v1126v', async (err, memosResult) => {
         if(!err) {
-            memos = JSON.parse(memosResult);
+            let memosJson = JSON.parse(memosResult);
+
+            const user = await User.create({
+                name: req.body.name,
+                userId: req.body.userId,
+                email: req.body.email,
+                passwordHash: req.body.passwordHash,
+                isEnabled: req.body.isEnabled,
+                version: 1
+            })
+            console.log('user created: ' + user.name)
+
+            const newMemos = [];
+            for(var i = 0; i < memosJson.length; i++) {
+                const memo = await Memo.create({
+                    accountName: memosJson[i].AccountName,
+                    memoId: memosJson[i].MemoId,
+                    category: memosJson[i].Category,
+                    applicationName: memosJson[i].ApplicaionName,
+                    email: memosJson[i].Email,
+                    password: memosJson[i].Password,
+                    url: memosJson[i].Url,
+                    note: memosJson[i].Note,
+                    user: user._id
+                })
+                newMemos.push(memo);
+            }
+            await user.memos.push(...newMemos)
+            await user.save();
+            await user.populate('memos') 
+            
+            res.status(200).json(user);
         }
-        else{
+        else {
             console.log(err.message);
+            res.sendStatus(401);
             return;
         }
     }); 
 
-    let user = await User.create({
-        name: req.body.name,
-        userId: req.body.userId,
-        email: req.body.email,
-        passwordHash: req.body.passwordHash,
-        isEnabled: req.body.isEnabled,
-        createdAt: req.body.createdAt,
-        modifiedAt: req.body.modifiedAt,
-        version: 1
-    });
-
-    memos.forEach(async m => {
-        let memo = await Memo.create({
-            accountName: m.AccountName,
-            memoId: m.MemoId,
-            category: m.Category,
-            applicationName: m.ApplicaionName,
-            email: m.Email,
-            password: m.Password,
-            url: m.Url,
-            note: m.Note,
-            user: user._id
-        });
-
-        user.memos.push(memo);
-    });
-
+    /*
+    const user = await User.create({name: 'vasil'});
+    const memo = await Memo.create({accountName: 'bbb',
+        user: user._id
+    })
+    user.memos.push(memo);
     await user.save();
-
-    if(user) {
-        console.log(user.name + ' added with ' + user.memos.length + ' memos.')
-        res.status(200).json({
-            "message": "User added.",
-            "user name": user.name,
-            "memos count" : user.memos.length
-        })
-    }
+    await user.populate('memos')
+    
+    console.log(user.name + ' added with ' + 
+        user.memos.length + ' memos.')
+    res.status(200).json({
+        "message": "User added.",
+        "user id": user._id,
+        "memos count" : user.memos.length
+    })
+    */
 }
 
 
 const getUser = async (req, res) => {
-    let user = await User.findOne({
-        name: 'bbbnova'
-    });
-
-    await user.populate('memos');
     
-    res.status(200).json({
-        "_id": user._id,
-        "memos": user.memos
-    });
+    User.findOne({  }).populate('memos').then(user => {
+        res.status(200).json({
+            "user _id": user
+        })
+    })
+
+    
 }
 
 

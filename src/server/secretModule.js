@@ -68,7 +68,7 @@ const encrypt = async (text, password, callback) => {
     });      
 }
 
-const decrypt = async (cipherText, password, callback) => {
+const decrypt = (cipherText, password, callback) => {
     const algorithm = 'aes-256-cfb8';
     
     let cipherBytes = Buffer.from(cipherText, 'base64');
@@ -84,7 +84,7 @@ const decrypt = async (cipherText, password, callback) => {
     let passwordBytes = Buffer.from(password, 'utf8');
     // console.log('passwordBytes: ' + passwordBytes.toString('hex'));
 
-    await crypto.pbkdf2(passwordBytes, saltBytes, 50000, 32 + 16, 'sha1', (err, keyIvBytes) => {
+    crypto.pbkdf2(passwordBytes, saltBytes, 50000, 32 + 16, 'sha1', (err, keyIvBytes) => {
         let result;
         try {
             let keyBytes = Buffer.copyBytesFrom(keyIvBytes, 0, 32);

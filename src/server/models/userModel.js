@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Memo = require('../models/memoModel')
 
 const userSchema = new mongoose.Schema({
     name: String,
@@ -6,19 +7,18 @@ const userSchema = new mongoose.Schema({
     email: String,
     passwordHash: String,
     isEnabled: Boolean,
-    memos: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Memo'
-    }],
+    memos: [{ 
+      type: mongoose.Types.ObjectId,
+      ref: "Memo" }],
     notes: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Note'
+      type: mongoose.Types.ObjectId,
+      ref: "Note"
     }],
     createdAt: {
       type: Date,
       default: Date.now
     },
-    mofifiedAt: {
+    modifiedAt: {
       type: Date,
       default: Date.now
     },
