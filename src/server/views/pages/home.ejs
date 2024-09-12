@@ -5,151 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <script src="scripts/cryptography.js"></script>
-    
-</head>
-<body>
     <script>
-        async function pbkdf2ImportKey(password)
-        {
-            var enc = new TextEncoder();
-            let pwd = enc.encode(password)
+        async function sendEncryptedData(cipherText){
 
-            let key = await window.crypto.subtle.importKey(
-                "raw", //only "raw" is allowed
-                pwd,
-                {
-                    name: "PBKDF2",
-                },
-                false, //whether the key is extractable (i.e. can be used in exportKey)
-                ["deriveKey", "deriveBits"]
-            )
+            const code = await encrypt(cipherText, 'v1126v');
 
-            return key;
+            console.log('send from browsed data: ' + code)
+
+            fetch("http://localhost:3000/api/test/data", {
+                method: "POST",
+                body: JSON.stringify({
+                    data: code
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+            // .then((response) => response.json())
+            // .then((json) => console.log(json));
         }
 
-        async function cbsImportKey(keyBytes)
-        {
-            let key = await window.crypto.subtle.importKey(
-                "raw", 
-                keyBytes,
-                { name: "AES-CBC", length: 256 },
-                false,
-                ["encrypt", "decrypt"]
-            );
-
-            return key;
+        async function encryptText() {
+            document.getElementById('text').value = await encrypt(document.getElementById('text').value, 'v1126v')
         }
-
-        async function pbkdf2DeriveBits(salt, iterations, algorithm, key, numberOfBits) {
-            let bits = await window.crypto.subtle.deriveBits(
-                {
-                    name: "PBKDF2",
-                    salt: salt,
-                    iterations: iterations,
-                    hash: {name: algorithm} //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
-                },
-                key,
-                numberOfBits
-            );
-
-            return bits;
-        }
-
-        async function decrypt(cipherText, password) {
-            let cipherBytes = base64ToArrayBuffer(cipherText);
-
-            let pbkdf2key = await pbkdf2ImportKey(password);
-            let salt = cipherBytes.slice(0, 32);
-            let dataBytes = cipherBytes.slice(32, cipherBytes.byteLength);
-            
-            let pbkdf2Bytes = await pbkdf2DeriveBits(salt, 50000, 'SHA-1', pbkdf2key, (32 + 16) * 8);    
-                 
-            let keyBytes = pbkdf2Bytes.slice(0, 32);
-            let ivBytes = pbkdf2Bytes.slice(32, 32 + 16);
-
-            console.log(cipherBytes);
-            console.log(salt);
-            console.log(dataBytes);
-            
-            let decrypted = await window.crypto.subtle.decrypt(
-                {
-                    name: "AES-CBC",
-                    iv: ivBytes,
-                },
-                await cbsImportKey(keyBytes),
-                dataBytes
-            )
-
-            let dec = new TextDecoder('utf-8');
-            document.getElementById('text').value = dec.decode(decrypted);
-        }
-
-        async function encrypt(cipherText, password) {
-            var enc = new TextEncoder();
-
-            let pbkdf2key = await pbkdf2ImportKey(password);
-            let salt = window.crypto.getRandomValues(new Uint8Array(32));
-
-            let pbkdf2Bytes = await pbkdf2DeriveBits(salt, 50000, 'SHA-1', pbkdf2key, (32 + 16) * 8);    
-                 
-            let keyBytes = pbkdf2Bytes.slice(0, 32);
-            let ivBytes = pbkdf2Bytes.slice(32, 32 + 16);
-            
-            let encrypted = await window.crypto.subtle.encrypt(
-                {
-                    name: "AES-CBC", 
-                    iv: ivBytes,
-                },
-                await cbsImportKey(keyBytes), //from generateKey or importKey above
-                enc.encode(cipherText) //ArrayBuffer of the data
-            )
-
-            console.log(salt);
-            console.log(encrypted);
-
-            var base64String = arrayBufferToBase64(appendBuffer(salt, encrypted));
-            console.log(appendBuffer(salt, encrypted));
-            document.getElementById('text').value = base64String;
-        }
-
-        function appendBuffer( buffer1, buffer2 ) {
-            var tmp = new Uint8Array( buffer1.byteLength + buffer2.byteLength );
-            tmp.set( new Uint8Array( buffer1 ), 0 );
-            tmp.set( new Uint8Array( buffer2 ), buffer1.byteLength );
-            return tmp.buffer;
-        }
-
-        function arrayBufferToBase64( buffer ) {
-            var binary = '';
-            var bytes = new Uint8Array( buffer );
-            var len = bytes.byteLength;
-            for (var i = 0; i < len; i++) {
-                binary += String.fromCharCode( bytes[ i ] );
-            }
-            return window.btoa( binary );
-        }
-
-
-
-        function base64ToArrayBuffer(base64) {
-            var binary_string =  window.atob(base64);
-            var len = binary_string.length;
-            var bytes = new Uint8Array( len );
-            for (var i = 0; i < len; i++)        {
-                bytes[i] = binary_string.charCodeAt(i);
-            }
-            return bytes.buffer;
+        async function decryptText() {
+            document.getElementById('text').value = await decrypt(document.getElementById('text').value, 'v1126v')
         }
     </script>
-
+</head>
+<body>
     <h1>Home page</h1>
     <p>Server running on port: <%= message %></p>
 
-    <textarea id="text" name="data" rows="15" cols="100">
-        <%= data %>
-    </textarea>
-    <button onclick="decrypt(document.getElementById('text').value, '1126')">Decrypt</button>
-    <button onclick="encrypt(document.getElementById('text').value, '1126')">Encrypt</button>
+    <textarea id="text" name="data" rows="15" cols="100" ><%= data %></textarea>
+    <button onclick="sendEncryptedData(document.getElementById('text').value)">Encrypt</button>
+    <button onclick="decryptText()">Decrypt</button>
+    
 </body>
 
 

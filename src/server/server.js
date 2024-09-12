@@ -6,6 +6,8 @@ const path = require('path');
 const { sleep } = require('./helper');
 require('dotenv').config();
 
+const secretModule = require('../server/secretModule');
+
 
 const PORT = process.env.PORT || 3000;
 
@@ -20,6 +22,17 @@ app.set('trust proxy', true);
 
 app.use('/api/user', userRouter); 
 app.use('/api/test', testRouter);
+app.get('/', (req, res) => {
+    secretModule.encryptBrowser('this is cipher', 'v1126v', (err, result) => {
+        if(!err){
+            res.render('pages/home.ejs', { "message": "hello", "data": result});
+        }
+        else{
+            res.render('pages/home.ejs', { "message": "hello", "data": err});
+        }
+    })
+    
+})
 
 
 mongoose.connect(process.env.DATA_CONNECTION_STRING).then(() => {
