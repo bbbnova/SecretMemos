@@ -16,11 +16,11 @@
 	transform: translate(-50%, -50%);
 }
 
-.container form {
+.container div {
 	margin: 50px;
 }
 
-.container form > * {
+.container div > * {
 	margin: 0 0 20px 0;
 }
 

@@ -30,6 +30,11 @@ const addUser = async (req, res) => {
     }
 }
 
+
+
+module.exports = { addUser };
+
+
 // const checkRegisterUser = async (req, res) => {
 //     try { 
 //         let usr = await User.findOne({
@@ -198,4 +203,3 @@ const addUser = async (req, res) => {
 //     return usr;
 // }
 
-module.exports = { addUser /*register, checkRegisterUser, getUser*/ };

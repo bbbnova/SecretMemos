@@ -1,22 +1,49 @@
 <div class="screen">
     <div class="container">
-        <form class="signup">
-            <h3>Secret Notes</h3>
+        <div class="signup">
+            <h3>Sign Up</h3>
             <div>
-                <i></i>
-                <input type="text" placeholder="Valid Email">
+                <i><label for="name">User name</label></i>
+                <input id="name" type="text" placeholder="Name">
             </div>
             <div>
-                <i></i>
-                <input type="password" placeholder="Password">
+                <i><label for="email">Valid email for activation</label></i>
+                <input id="email" type="email" placeholder="email">
             </div>
-            <button class="button signup__submit">
+            <div>
+                <i><label for="password">Master password</label></i>
+                <input id="password" type="password" placeholder="password">
+            </div>
+            <button onclick="submit()" class="button signup__submit">
                 <span>Sign up</span>
                 <i></i>
             </button>				
-        </form>
+        </div>
+        
         <div class="social-signup"> 
         </div>
     </div>
 </div> 
 
+<script>
+    async function submit() {
+        let email = document.getElementById('email').value
+        let password = document.getElementById('password').value
+
+        let response = await fetch("http://localhost:3000/api/user/signup", {
+            method: "POST",
+            body: JSON.stringify({
+                email: email,
+                passwordHash: await getHash(password)
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        
+        if(response && (response.status === 200)) {
+            //window.location.replace("/");
+            window.location.href = '/login';
+        }
+    }
+</script>

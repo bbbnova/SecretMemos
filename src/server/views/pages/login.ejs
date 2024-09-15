@@ -1,22 +1,63 @@
 <div class="screen">
     <div class="container">
-        <form class="login">
-            <h3>Secret Notes</h3>
+        <div id="form">
+            <h3>Log In</h3>
             <div>
-                <i></i>
-                <input type="text" placeholder="Valid Email">
+                <i><label for="email">Your email</label></i>
+                <input id="email" name="email" type="email" placeholder="email">
             </div>
             <div>
-                <i></i>
-                <input type="password" placeholder="Password">
+                <i><label for="password">Master password</label></i>
+                <input id="password" name="passwordHash" type="password" placeholder="password">
             </div>
-            <button class="button login__submit">
-                <span>Log In</span>
-                <i></i>
+            <button onclick="submit()" class="button login__submit">
+                <span>Log In</span> 
             </button>				
-        </form>
+        </div>
+        
         <div class="social-login"> 
         </div>
     </div>
-</div> 
+</div>
 
+<script>
+    async function submit() {
+        let email = document.getElementById('email').value
+        let passwordHash = await getHash(document.getElementById('password').value)
+
+        postData('/login', {email: email, passwordHash: passwordHash}, 'post');
+        // let response = await fetch("http://localhost:3000/login", {
+        //     method: "POST",
+        //     body: JSON.stringify({
+        //         email: email,
+        //         passwordHash: passwordHash
+        //     }),
+        //     headers: {
+        //         "Content-type": "application/json; charset=UTF-8"
+        //     }
+        // })
+
+        
+    }
+
+    function postData(path, params, method) {   
+        const hidden_form = document.createElement('form'); 
+        hidden_form.method = method || 'post'; 
+        hidden_form.action = path; 
+            
+        for (const key in params) { 
+            if (params.hasOwnProperty(key)) { 
+                const hidden_input = document.createElement 
+                    ('input'); 
+                hidden_input.type = 'hidden'; 
+                hidden_input.name = key; 
+                hidden_input.value = params[key]; 
+
+                hidden_form.appendChild(hidden_input); 
+            } 
+        } 
+
+        document.body.appendChild(hidden_form); 
+        hidden_form.submit(); 
+    }
+</script>

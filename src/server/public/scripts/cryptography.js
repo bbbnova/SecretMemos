@@ -98,6 +98,19 @@ async function encrypt(cipherText, password) {
     return base64String;
 }
 
+async function getHash(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hash = await window.crypto.subtle.digest("SHA-256", data);
+    return arrayBufferToBase64(hash);
+}
+
+async function verifyHash(data, hash) {
+    const dataBytes = base64ToArrayBuffer(data);
+    const dataHashBytes = await window.crypto.subtle.digest("SHA-256", dataBytes);
+    return arrayBufferToBase64(dataHashBytes) === hash;
+}
+
 function appendBuffer( buffer1, buffer2 ) {
     var tmp = new Uint8Array( buffer1.byteLength + buffer2.byteLength );
     tmp.set( new Uint8Array( buffer1 ), 0 );

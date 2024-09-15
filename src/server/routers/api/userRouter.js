@@ -18,6 +18,7 @@ router.post('/register', userControler.register);
 
 router.post('/add', userControler.addUser);
 router.get('/get', userControler.getUser)
+router.post('/signup', userControler.signUp)
 
 
 module.exports = router;

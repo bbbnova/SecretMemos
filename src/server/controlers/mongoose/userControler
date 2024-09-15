@@ -57,10 +57,45 @@ const getUser = async (req, res) => {
             "user _id": user
         })
     })
+}
 
-    
+const signUp = async (req, res) => {
+    try {
+        let findUser = await User.findOne({email: req.body.email});
+        
+        if(!findUser){
+            let user = await User.create({
+                name: req.body.name,
+                userId: '',
+                email: req.body.email,
+                passwordHash: req.body.passwordHash,
+                isEnabled: false,
+                encryptedNotes: '',
+                encryptedMemos: '',
+                version: 1
+            })
+
+            if(user) {
+                console.log(user.email + ' registered.')
+                res.status(200).json({
+                    "message": "User registered.",
+                    "user_id": user._id                
+                })
+                return;
+            }
+        }
+        else {
+            console.log(findUser.name + 'already is registered.')
+            res.status(409).json({
+                "message": "User email already registered."
+            })
+        }
+    }
+    catch(err)
+    {
+        console.log(err);
+    }
 }
 
 
-
-module.exports = { addUser, getUser };
+module.exports = { addUser, getUser, signUp };
