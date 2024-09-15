@@ -7,7 +7,9 @@ app.use(express.json());
 
 
 
-router.get('/', htmlControler.get);
+router.get('/', htmlControler.getHome);
+router.get('/login', htmlControler.getLogin);
+router.get('/signup', htmlControler.getSignup);
 
 
 
