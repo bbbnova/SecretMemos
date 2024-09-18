@@ -8,11 +8,11 @@
             </div>
             <div>
                 <i><label for="email">Valid email for activation</label></i>
-                <input id="email" type="email" placeholder="email">
+                <input id="email" type="email" placeholder="Email">
             </div>
             <div>
                 <i><label for="password">Master password</label></i>
-                <input id="password" type="password" placeholder="password">
+                <input id="password" type="password" placeholder="Password">
             </div>
             <button onclick="submit()" class="button signup__submit">
                 <span>Sign up</span>
@@ -27,12 +27,14 @@
 
 <script>
     async function submit() {
+        let name = document.getElementById('name').value
         let email = document.getElementById('email').value
         let password = document.getElementById('password').value
 
         let response = await fetch("http://localhost:3000/api/user/signup", {
             method: "POST",
             body: JSON.stringify({
+                name: name,
                 email: email,
                 passwordHash: await getHash(password)
             }),

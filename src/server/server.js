@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+var cookieParser = require('cookie-parser');
 const userRouter = require('./routers/api/userRouter');
-const testRouter = require('./routers/api/testRouter');
+const memosRouter = require('./routers/api/memosRouter');
 const htmlRouter = require('./routers/html/htmlRouter');
 const path = require('path');
 const { sleep } = require('./helper');
@@ -10,6 +11,7 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 var expressLayouts = require('express-ejs-layouts');
@@ -22,6 +24,7 @@ app.use(expressLayouts);
 app.set('trust proxy', true);
 
 app.use('/api/user', userRouter); 
+app.use('/api/memos', memosRouter); 
 app.use('/', htmlRouter);
 app.use('', (req, res) => {
     res.status(404).render('pages/404', {layout: 'layouts/main'})

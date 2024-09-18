@@ -1,6 +1,28 @@
 
 <h1>HOME</h1>
+<script>
+    
+    async function get() {
+        var myHeaders =  new Headers()
+        myHeaders.append('Content-Type','application/json; charset=utf-8');
+        myHeaders.append('Authorization', 'Bearer ' + sessionStorage.getItem('token'));
 
+        let res = await fetch( '/api/memos/get', {
+            credentials: 'include',
+            headers: myHeaders,
+            method: 'GET'
+        })
+
+        if(res && res.status === 200) {
+            console.log('load memos from response')
+        } else {
+            //redirect to unauthorized
+            console.log('no res')
+        }
+    }
+
+    get();
+</script>
 
 <!-- <!DOCTYPE html>
 <html lang="en">

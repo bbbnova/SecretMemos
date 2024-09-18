@@ -52,7 +52,12 @@ const addUser = async (req, res) => {
 
 const getUser = async (req, res) => {
     
-    User.findOne({  }).populate('memos').then(user => {
+    User.findOne({ 
+        "email": req.body.email, 
+        "passwordHash": req.body.passwordHash
+    })
+    .populate('memos')
+    .then(user => {
         res.status(200).json({
             "user _id": user
         })
@@ -69,14 +74,15 @@ const signUp = async (req, res) => {
                 userId: '',
                 email: req.body.email,
                 passwordHash: req.body.passwordHash,
-                isEnabled: false,
+                isEnabled: true, //disable and enable by email link
                 encryptedNotes: '',
                 encryptedMemos: '',
                 version: 1
             })
 
             if(user) {
-                console.log(user.email + ' registered.')
+                console.log('user registered: ' + user.name)
+                console.log('user passwordHash: ' +  user.passwordHash)
                 res.status(200).json({
                     "message": "User registered.",
                     "user_id": user._id                
@@ -103,10 +109,13 @@ const logIn = async (req, res) => {
 
         if(user)
         {
-            res.status(200).json({
+            resData = {
                 "message": "ok",
-                "token": "new token based on user email, valid time and ip stored to database"
-            })
+                "token": JSON.stringify({"email": user.email, "ip": req.ip, "exp": new Date(new Date().getTime() + 10 * 1000 * 60 * 60)})
+                //encrypt the token with server private password
+            }
+            res.cookie("resData", resData);
+            res.status(200).json(resData)
         } else {
             res.status(401).json({"message": "user name or password incorrect"});
         }

@@ -38,9 +38,15 @@
             }
         })
 
-        // if(response && (response.status === 200)) {
-            console.log(await response.json())
-        // }
+        let data = await response.json()
+        if(response && (response.status === 200)) {
+            console.log(data)
+            sessionStorage.setItem("token", data.token)
+        }
+        else{
+            document.getElementById('email').value = ''
+            document.getElementById('password').value = ''
+        }
         
     }
 

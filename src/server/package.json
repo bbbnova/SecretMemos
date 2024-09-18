@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/bbbnova/SecretMemos#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
