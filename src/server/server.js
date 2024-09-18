@@ -7,16 +7,14 @@ const path = require('path');
 const { sleep } = require('./helper');
 require('dotenv').config();
 
-const secretModule = require('../server/secretModule');
-
-
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 var expressLayouts = require('express-ejs-layouts');
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -24,7 +22,6 @@ app.use(expressLayouts);
 app.set('trust proxy', true);
 
 app.use('/api/user', userRouter); 
-// app.use('/api/test', testRouter);
 app.use('/', htmlRouter);
 app.use('', (req, res) => {
     res.status(404).render('pages/404', {layout: 'layouts/main'})

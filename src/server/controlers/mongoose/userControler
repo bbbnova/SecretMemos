@@ -97,5 +97,22 @@ const signUp = async (req, res) => {
     }
 }
 
+const logIn = async (req, res) => {
+    try{
+        let user = await User.findOne({email: req.body.email, passwordHash: req.body.passwordHash});
 
-module.exports = { addUser, getUser, signUp };
+        if(user)
+        {
+            res.status(200).json({
+                "message": "ok",
+                "token": "new token based on user email, valid time and ip stored to database"
+            })
+        } else {
+            res.status(401).json({"message": "user name or password incorrect"});
+        }
+    } catch(err) {
+        console.log(err);
+    }
+}
+
+module.exports = { addUser, getUser, signUp, logIn };

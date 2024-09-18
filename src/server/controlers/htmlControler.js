@@ -12,8 +12,6 @@ const getLogin = (req, res) => {
 
 const postLogin = async (req, res) => { 
     let loginData = req.body;
-    console.log(loginData);
-
     let user = await User.findOne({email: loginData.email, passwordHash: loginData.passwordHash});
     if(user) { 
         //set coockie

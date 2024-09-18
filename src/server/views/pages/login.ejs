@@ -25,39 +25,43 @@
         let email = document.getElementById('email').value
         let passwordHash = await getHash(document.getElementById('password').value)
 
-        postData('/login', {email: email, passwordHash: passwordHash}, 'post');
-        // let response = await fetch("http://localhost:3000/login", {
-        //     method: "POST",
-        //     body: JSON.stringify({
-        //         email: email,
-        //         passwordHash: passwordHash
-        //     }),
-        //     headers: {
-        //         "Content-type": "application/json; charset=UTF-8"
-        //     }
-        // })
+        // postData('/login', {email: email, passwordHash: passwordHash}, 'post');
+        
+        let response = await fetch("http://localhost:3000/api/user/login", {
+            method: "POST",
+            body: JSON.stringify({
+                email: email,
+                passwordHash: passwordHash
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
 
+        // if(response && (response.status === 200)) {
+            console.log(await response.json())
+        // }
         
     }
 
-    function postData(path, params, method) {   
-        const hidden_form = document.createElement('form'); 
-        hidden_form.method = method || 'post'; 
-        hidden_form.action = path; 
+    // function postData(path, params, method) {   
+    //     const hidden_form = document.createElement('form'); 
+    //     hidden_form.method = method || 'post'; 
+    //     hidden_form.action = path; 
             
-        for (const key in params) { 
-            if (params.hasOwnProperty(key)) { 
-                const hidden_input = document.createElement 
-                    ('input'); 
-                hidden_input.type = 'hidden'; 
-                hidden_input.name = key; 
-                hidden_input.value = params[key]; 
+    //     for (const key in params) { 
+    //         if (params.hasOwnProperty(key)) { 
+    //             const hidden_input = document.createElement 
+    //                 ('input'); 
+    //             hidden_input.type = 'hidden'; 
+    //             hidden_input.name = key; 
+    //             hidden_input.value = params[key]; 
 
-                hidden_form.appendChild(hidden_input); 
-            } 
-        } 
+    //             hidden_form.appendChild(hidden_input); 
+    //         } 
+    //     } 
 
-        document.body.appendChild(hidden_form); 
-        hidden_form.submit(); 
-    }
+    //     document.body.appendChild(hidden_form); 
+    //     hidden_form.submit(); 
+    // }
 </script>
