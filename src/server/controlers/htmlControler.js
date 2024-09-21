@@ -1,9 +1,17 @@
 const express = require('express');
 const app = express(); 
 const User = require('../models/userModel')
+const secretModule = require('../secretModule')
 
 const getHome = (req, res) => { 
-    res.render('pages/home', { locals: { title: 'Secret Notes', css: '/css/home.css'}, layout: 'layouts/main'});
+    let resData = JSON.parse(req.cookies['resData'])
+    secretModule.decrypt(resData.token, 'v1126v', (err, result) => {
+        if(!err) {
+            let token = JSON.parse(result);
+            res.render('pages/home', { locals: { title: 'Secret Notes', css: '/css/home.css', resData: token.email}, layout: 'layouts/main'});
+        }
+    })
+    
 }
 
 const getLogin = (req, res) => { 

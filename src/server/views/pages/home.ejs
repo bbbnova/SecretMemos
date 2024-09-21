@@ -1,6 +1,8 @@
 
 <h1>HOME</h1>
-<script>
+<p><% if(locals.resData) {return 'email: ' + locals.resData } %></p>
+
+<!-- <script>
     
     async function get() {
         var myHeaders =  new Headers()
@@ -22,7 +24,7 @@
     }
 
     get();
-</script>
+</script> -->
 
 <!-- <!DOCTYPE html>
 <html lang="en">

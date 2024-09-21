@@ -29,6 +29,7 @@
         
         let response = await fetch("http://localhost:3000/api/user/login", {
             method: "POST",
+            redirect: "follow",
             body: JSON.stringify({
                 email: email,
                 passwordHash: passwordHash
@@ -38,15 +39,37 @@
             }
         })
 
-        let data = await response.json()
-        if(response && (response.status === 200)) {
-            console.log(data)
-            sessionStorage.setItem("token", data.token)
+        if (response.redirected) {
+            window.location.href = response.url;
         }
-        else{
+        else {
             document.getElementById('email').value = ''
             document.getElementById('password').value = ''
         }
+
+        
+
+        // let response = await fetch("http://localhost:3000/api/user/login", {
+        //     method: "POST",
+        //     redirect: "follow",
+        //     body: JSON.stringify({
+        //         email: email,
+        //         passwordHash: passwordHash
+        //     }),
+        //     headers: {
+        //         "Content-type": "application/json; charset=UTF-8"
+        //     }
+        // })
+
+        // let data = await response.json()
+        // if(response && (response.status === 200)) {
+        //     console.log(data)
+        //     sessionStorage.setItem("token", data.token)
+        // }
+        // else{
+        //     document.getElementById('email').value = ''
+        //     document.getElementById('password').value = ''
+        // }
         
     }
 

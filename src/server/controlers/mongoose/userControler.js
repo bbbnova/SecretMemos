@@ -109,13 +109,17 @@ const logIn = async (req, res) => {
 
         if(user)
         {
-            resData = {
-                "message": "ok",
-                "token": JSON.stringify({"email": user.email, "ip": req.ip, "exp": new Date(new Date().getTime() + 10 * 1000 * 60 * 60)})
-                //encrypt the token with server private password
-            }
-            res.cookie("resData", resData);
-            res.status(200).json(resData)
+            secretModule.encrypt(JSON.stringify({"email": user.email, "ip": req.ip, "exp": new Date(new Date().getTime() + 10 * 1000 * 60 * 60)}), 
+            'v1126v', 
+            (err, result) => {
+                resData = {
+                    "message": "ok",
+                    "token": result
+                }
+                res.cookie("resData", JSON.stringify(resData));
+                res.redirect('/')
+            })        
+            
         } else {
             res.status(401).json({"message": "user name or password incorrect"});
         }
