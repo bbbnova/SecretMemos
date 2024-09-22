@@ -1,52 +1,84 @@
 const User = require('../../models/userModel');
 const Memo = require('../../models/memoModel');
 const secretModule = require('../../secretModule');
+const crypto = require('crypto')
 
 const { ObjectId } = require('mongodb');
 
 const addUser = async (req, res) => {
 
-    secretModule.decrypt(req.body.encryptedMemos, 'v1126v', async (err, memosResult) => {
-        if(!err) {
-            let memosJson = JSON.parse(memosResult);
+    let memosResult = secretModule.decrypt(req.body.encryptedMemos, 'v1126v')
+    let memosJson = JSON.parse(memosResult);            
 
-            const user = await User.create({
-                name: req.body.name,
-                userId: req.body.userId,
-                email: req.body.email,
-                passwordHash: req.body.passwordHash,
-                isEnabled: req.body.isEnabled,
-                version: 1
-            })
-            console.log('user created: ' + user.name)
+    const user = await User.create({
+        name: req.body.name,
+        userId: req.body.userId,
+        email: req.body.email,
+        passwordHash: secretModule.getHash('v1126v'),
+        salt: crypto.randomBytes(32).toString('base64'),
+        isEnabled: req.body.isEnabled,
+        version: 1
+    })
+    console.log('user created: ' + user.name)
 
-            const newMemos = [];
-            for(var i = 0; i < memosJson.length; i++) {
-                const memo = await Memo.create({
-                    accountName: memosJson[i].AccountName,
-                    memoId: memosJson[i].MemoId,
-                    category: memosJson[i].Category,
-                    applicationName: memosJson[i].ApplicaionName,
-                    email: memosJson[i].Email,
-                    password: memosJson[i].Password,
-                    url: memosJson[i].Url,
-                    note: memosJson[i].Note,
-                    user: user._id
-                })
-                newMemos.push(memo);
-            }
-            await user.memos.push(...newMemos)
-            await user.save();
-            await user.populate('memos') 
+    const newMemos = [];
+    for(var i = 0; i < memosJson.length; i++) {
+
+        let pwd = secretModule.decrypt(memosJson[i].Password, 'v1126v')
+        
+        let encryptedPwd = secretModule.encrypt(pwd, 'v1126v')
+
+        const memo = await Memo.create({
+            accountName: memosJson[i].AccountName,
+            memoId: memosJson[i].MemoId,
+            category: memosJson[i].Category,
+            applicationName: memosJson[i].ApplicaionName,
+            email: memosJson[i].Email,
+            password: encryptedPwd,
+            url: memosJson[i].Url,
+            note: memosJson[i].Note,
+            user: user._id
+        })
+        newMemos.push(memo);
+
+        
             
-            res.status(200).json(user);
-        }
-        else {
-            console.log(err.message);
-            res.sendStatus(401);
-            return;
-        }
-    }); 
+        //     if(!err) {
+        //         console.log(': pwd --> ' + pwd)
+        //         encryptedPwd = secretModule.getHash(pwd)
+        //         // await secretModule.encryptBrowser(pwd, 'v1126v', async (error, encryptedPwd) =>
+        //         // {
+        //         //     if(!error) {
+        //         //         console.log(': pwd --> ' + encryptedPwd)
+
+        //                 // const memo = await Memo.create({
+        //                 //     accountName: memosJson[i].AccountName,
+        //                 //     memoId: memosJson[i].MemoId,
+        //                 //     category: memosJson[i].Category,
+        //                 //     applicationName: memosJson[i].ApplicaionName,
+        //                 //     email: memosJson[i].Email,
+        //                 //     password: encryptedPwd,
+        //                 //     url: memosJson[i].Url,
+        //                 //     note: memosJson[i].Note,
+        //                 //     user: user._id
+        //                 // })
+        //                 // newMemos.push(memo);
+        //             // }   
+        //             // else {
+        //             //     console.log('ERROR 2: '+ error)
+        //             // }
+        //         // })
+        //     } else {
+        //         console.log('ERROR 1: '+ err)
+        //     }
+            
+        // })                
+    }
+    await user.memos.push(...newMemos)
+    await user.save();
+    await user.populate('memos') 
+    
+    res.status(200).json(user); 
 }
 
 
@@ -74,6 +106,7 @@ const signUp = async (req, res) => {
                 userId: '',
                 email: req.body.email,
                 passwordHash: req.body.passwordHash,
+                salt: crypto.randomBytes(32).toString('base64'),
                 isEnabled: true, //disable and enable by email link
                 encryptedNotes: '',
                 encryptedMemos: '',
@@ -91,7 +124,7 @@ const signUp = async (req, res) => {
             }
         }
         else {
-            console.log(findUser.name + 'already is registered.')
+            console.log(findUser.email + ' already is registered.')
             res.status(409).json({
                 "message": "User email already registered."
             })
@@ -109,16 +142,20 @@ const logIn = async (req, res) => {
 
         if(user)
         {
-            secretModule.encrypt(JSON.stringify({"email": user.email, "ip": req.ip, "exp": new Date(new Date().getTime() + 10 * 1000 * 60 * 60)}), 
-            'v1126v', 
-            (err, result) => {
-                resData = {
-                    "message": "ok",
-                    "token": result
-                }
-                res.cookie("resData", JSON.stringify(resData));
-                res.redirect('/')
-            })        
+            let token = secretModule.encryptString(JSON.stringify({
+                "email": user.email, "ip": req.ip, "exp": new Date(new Date().getTime() + 1 * 1000 * 60 * 60)
+            }))    
+            let resData = {
+                "message": "user successfully logged in",
+                "token": token
+            }
+            res.cookie("resData", JSON.stringify(resData), 
+            {
+                httpOnly: true,
+                secure: process.env.NODE_ENV!=='development',
+                expires: token.exp
+            });
+            res.redirect('/')  
             
         } else {
             res.status(401).json({"message": "user name or password incorrect"});

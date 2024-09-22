@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     userId: String,
     email: String,
     passwordHash: String,
+    salt: String,
     isEnabled: Boolean,
     memos: [{ 
       type: mongoose.Types.ObjectId,

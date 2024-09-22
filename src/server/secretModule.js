@@ -43,36 +43,35 @@ function verifyHash(text, hashValue) {
 
 
 
-const encrypt = async (text, password, callback) => {
+const encrypt = (text, password) => {
     const algorithm = 'aes-256-cfb8';
     
     let saltBytes = crypto.randomBytes(32);
     let passwordBytes = Buffer.from(password, 'utf8');
     
-    crypto.pbkdf2(passwordBytes, saltBytes, 50000, 32 + 16, 'sha1', (err, keyIvBytes) => {
-        let result;
-        try {
-            let keyBytes = Buffer.copyBytesFrom(keyIvBytes, 0, 32);
-            let ivBytes = Buffer.copyBytesFrom(keyIvBytes, 32, 16); 
+    let keyIvBytes = crypto.pbkdf2Sync(passwordBytes, saltBytes, 50000, 32 + 16, 'sha1')
+    let result;
+    try {
+        let keyBytes = Buffer.copyBytesFrom(keyIvBytes, 0, 32);
+        let ivBytes = Buffer.copyBytesFrom(keyIvBytes, 32, 16); 
 
-            const cipher = crypto.createCipheriv(algorithm, keyBytes, ivBytes);    
-            cipher.setAutoPadding(false);
-            let textBytes = Buffer.from(text, 'utf8');
-            // let textBytesPadded = pkcs7.pad(textBytes);
-            let enc = [saltBytes, cipher.update(textBytes)];
-            enc.push(cipher.final());
-            result = Buffer.concat(enc).toString('base64');
-        }
-        catch(err) {
-            callback(err, result);
-            return;
-        }
-        
-        callback(null, result);
-    });      
+        const cipher = crypto.createCipheriv(algorithm, keyBytes, ivBytes);    
+        cipher.setAutoPadding(false);
+        let textBytes = Buffer.from(text, 'utf8');
+        // let textBytesPadded = pkcs7.pad(textBytes);
+        let enc = [saltBytes, cipher.update(textBytes)];
+        enc.push(cipher.final());
+        result = Buffer.concat(enc).toString('base64');
+    }
+    catch(err) {
+        console.log("error encrypting: " + err)            
+        return '';
+    }
+    
+    return result 
 }
 
-const decrypt = (cipherText, password, callback) => {
+const decrypt = (cipherText, password) => {
     const algorithm = 'aes-256-cfb8';
     
     let cipherBytes = Buffer.from(cipherText, 'base64');
@@ -88,30 +87,30 @@ const decrypt = (cipherText, password, callback) => {
     let passwordBytes = Buffer.from(password, 'utf8');
     // console.log('passwordBytes: ' + passwordBytes.toString('hex'));
 
-    crypto.pbkdf2(passwordBytes, saltBytes, 50000, 32 + 16, 'sha1', (err, keyIvBytes) => {
-        let result;
-        try {
-            let keyBytes = Buffer.copyBytesFrom(keyIvBytes, 0, 32);
-            // console.log('keyBytes: ' + keyBytes.toString('hex'));
+    const keyIvBytes = crypto.pbkdf2Sync(passwordBytes, saltBytes, 50000, 32 + 16, 'sha1')
+    
+    let result;
+    try {
+        let keyBytes = Buffer.copyBytesFrom(keyIvBytes, 0, 32);
+        // console.log('keyBytes: ' + keyBytes.toString('hex'));
 
-            let ivBytes = Buffer.copyBytesFrom(keyIvBytes, 32, 16);
-            // console.log('ivBytes: ' + ivBytes.toString('hex'));
-            
-            const decipher = crypto.createDecipheriv(algorithm, keyBytes, ivBytes);
-            decipher.setAutoPadding(false);
+        let ivBytes = Buffer.copyBytesFrom(keyIvBytes, 32, 16);
+        // console.log('ivBytes: ' + ivBytes.toString('hex'));
+        
+        const decipher = crypto.createDecipheriv(algorithm, keyBytes, ivBytes);
+        decipher.setAutoPadding(false);
 
-            let res1 = decipher.update(dataBytes);
-            let res2 = decipher.final();
-            let res = Buffer.concat([res1, res2]);
-            result = res.toString('utf8');
-        }
-        catch(err) {
-            callback(err, result);
-            return;
-        }
+        let res1 = decipher.update(dataBytes);
+        let res2 = decipher.final();
+        let res = Buffer.concat([res1, res2]);
+        result = res.toString('utf8');
+    }
+    catch(err) {
+        console.log('error decrypting: ' + err)
+        return ''
+    }
 
-        callback(null, result);
-    });    
+    return result;    
 }
 
 
