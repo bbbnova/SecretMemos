@@ -1,5 +1,112 @@
+<h4>Passwords: </h4>
+<br/>
+<div>
+    <table id="memosTable">   
+        <thead>
+            <tr>
+                <th id="categoryTd">Category</th>
+                <th id="applicationTd">Application</th>
+                <th id="accountTd">Account name</th>
+                <th id="emailTd">Email</th>
+                <th id="urlTd">Url</th>
+                <th id="noteTd">Note</th>
+            </tr>
+        </thead> 
+        <tbody>
+            
+        </tbody>
+    </table>
 
-<h1>HOME</h1>
+    <!-- <article
+        id="mems"
+        data-memos="<%=locals.strMemos%>">
+    </article> -->
+</div>
+
+<script>
+    async function getMemos() {
+        let response = await fetch("http://localhost:3000/api/memos/get", {
+            method: "GET" 
+        })
+
+        return response.json();
+    }
+
+    async function getUserSalt() {
+        let response = await fetch("http://localhost:3000/api/user/getSalt", {
+            method: "GET"
+        })
+        
+        let {salt} = await response.json();
+        return salt;
+    }
+
+    window.onload = async (event) => {        
+        let memos = await getMemos()
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt);
+        
+        let table = document.querySelector("#memosTable")
+        for(let i = 0; i < memos.length; i ++) {
+            let memo = memos[i]
+
+            let note = await decrypt(memo.note, pwd)
+            let row = table.tBodies[0].insertRow(i)
+            let cell = row.insertCell(0).innerHTML = memo.category
+            let cell1 = row.insertCell(1).innerHTML = memo.applicationName
+            let cell2 = row.insertCell(2).innerHTML = memo.accountName
+            let cell3 = row.insertCell(3).innerHTML = memo.email
+            let cell4 = row.insertCell(4).innerHTML = memo.url
+            let cell5 = row.insertCell(5).innerHTML = note
+        }
+        
+    } 
+
+    
+
+    
+
+    // let article = document.querySelector("#mems")
+    // let memos = article.dataset.memos;
+    // // let memos = '<%- locals.smemos %>'    
+    // // memos = memos.replace('\\', "\\\\")
+    // memos = JSON.parse(memos)
+
+    // function groupBy(list, keyGetter) {
+    //     const map = new Map();
+    //     list.forEach((item) => {
+    //         const key = keyGetter(item);
+    //         const collection = map.get(key);
+    //         if (!collection) {
+    //             map.set(key, [item]);
+    //         } else {
+    //             collection.push(item);
+    //         }
+    //     });
+    //     return map;
+    // }
+
+    // const grouped = groupBy(memos, m => m.category); 
+
+    // window.addEventListener('load', async function() { 
+    //     let noteCells = Array.from(document.getElementsByClassName('note'));
+        
+    //     // let note = await decrypt(noteCells[0].innerHTML.toString(), 'v1126v')
+    //     // console.log(note)
+    //     for(let i = 0; i < noteCells.length; i++) {
+    //         let element = noteCells[i]
+    //         if(element.innerHTML.length > 0) {
+    //             let note = await decrypt(element.innerHTML.toString(), 'v1126v')
+                
+    //             element.innerHTML = note
+    //         }
+    //     } 
+    // }, false);  
+    
+    
+</script>
+
 
 <!-- <script>
     

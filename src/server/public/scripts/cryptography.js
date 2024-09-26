@@ -56,9 +56,9 @@ async function decrypt(cipherText, password) {
     let keyBytes = pbkdf2Bytes.slice(0, 32);
     let ivBytes = pbkdf2Bytes.slice(32, 32 + 16);
 
-    console.log(cipherBytes);
-    console.log(salt);
-    console.log(dataBytes);
+    // console.log(cipherBytes);
+    // console.log(salt);
+    // console.log(dataBytes);
     
     let decrypted = await window.crypto.subtle.decrypt(
         {

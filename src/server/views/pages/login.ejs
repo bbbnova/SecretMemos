@@ -1,5 +1,5 @@
 <div class="screen">
-    <div class="container">
+    <div id="container" class="container">
         <div id="form">
             <h3>Log In</h3>
             <div>
@@ -10,7 +10,7 @@
                 <i><label for="password">Master password</label></i>
                 <input id="password" name="passwordHash" type="password" placeholder="password">
             </div>
-            <button onclick="submit()" class="button login__submit">
+            <button id="btnLogin" onclick="submit()" class="button login__submit">
                 <span>Log In</span> 
             </button>				
         </div>
@@ -21,15 +21,27 @@
 </div>
 
 <script>
+    sessionStorage.removeItem('pwd');
+
+    document
+            .getElementById("container")
+            .addEventListener("keypress", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    document.getElementById("btnLogin").click()
+                }
+            });
+
     async function submit() {
         let email = document.getElementById('email').value
+        let pwd = document.getElementById('password').value
         let passwordHash = await getHash(document.getElementById('password').value)
 
         // postData('/login', {email: email, passwordHash: passwordHash}, 'post');
         
         let response = await fetch("http://localhost:3000/api/user/login", {
             method: "POST",
-            redirect: "follow",
+            // redirect: "follow",
             body: JSON.stringify({
                 email: email,
                 passwordHash: passwordHash
@@ -39,8 +51,11 @@
             }
         })
 
-        if (response.redirected) {
-            window.location.href = response.url;
+        if (response.status === 200) {
+            let {salt} = await response.json()
+            let encryptedPwd = await encrypt(pwd, salt)
+            sessionStorage.setItem('pwd', encryptedPwd);
+            window.location.href = '/';
         }
         else {
             document.getElementById('email').value = ''

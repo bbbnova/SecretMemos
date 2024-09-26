@@ -1,19 +1,43 @@
 const express = require('express');
 const app = express(); 
 const User = require('../models/userModel')
+const Memo = require('../models/memoModel')
 const secretModule = require('../secretModule')
 
-const getHome = (req, res) => { 
-    res.render('pages/home', { 
-        locals: 
-        { 
+const getHome = async (req, res) => { 
+    // let memosArray = []
+    // let memos = await Memo.find({userId: req.user._id })
+    
+
+    // for await (const doc of memos) {
+    //     memosArray.push(doc)
+    // }
+
+    // res.render('pages/home', { 
+    //     secretModule: secretModule,
+    //     locals: 
+    //     { 
+    //         title: 'Secret Notes', 
+    //         css: '/css/home.css', 
+    //         name: req.user.name,
+    //         email: req.user.email,
+    //         memos: memosArray,
+    //         strMemos: JSON.stringify(memosArray),
+    //         isAuthenticated: req.isAuthenticated
+    //     }, 
+    //     layout: 'layouts/main'
+    // });
+
+    res.render('pages/home', {
+        locals: {
             title: 'Secret Notes', 
             css: '/css/home.css', 
-            email: req.user.name,
-            isAuthenticated: req.isAuthenticated
-        }, 
+            name: req.user.name,
+            email: req.user.email,
+            isAuthenticated: req.isAuthenticated },
         layout: 'layouts/main'
-    });
+    })
+    
 }
 
 const getLogin = (req, res) => { 
@@ -23,7 +47,8 @@ const getLogin = (req, res) => {
 
 const getLogout = (req, res) => { 
     res.clearCookie("resData");
-    res.render('pages/login', { locals: { title: 'Login Secret Notes', css: '/css/login.css'}, layout: 'layouts/main'});
+    res.redirect('/login')
+    //res.render('pages/login', { locals: { title: 'Login Secret Notes', css: '/css/login.css'}, layout: 'layouts/main'});
 }
 
 const postLogin = async (req, res) => { 

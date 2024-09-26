@@ -4,6 +4,7 @@ const secretModule = require('../../secretModule');
 const crypto = require('crypto')
 
 const { ObjectId } = require('mongodb');
+const { json } = require('express');
 
 const addUser = async (req, res) => {
 
@@ -27,16 +28,17 @@ const addUser = async (req, res) => {
         let pwd = secretModule.decrypt(memosJson[i].Password, 'v1126v')
         
         let encryptedPwd = secretModule.encrypt(pwd, 'v1126v')
+        let encryptedNote = secretModule.encryptBrowser(memosJson[i].Note, 'v1126v')
 
         const memo = await Memo.create({
             accountName: memosJson[i].AccountName,
             memoId: memosJson[i].MemoId,
             category: memosJson[i].Category,
-            applicationName: memosJson[i].ApplicaionName,
+            applicationName: memosJson[i].ApplicationName,
             email: memosJson[i].Email,
             password: encryptedPwd,
             url: memosJson[i].Url,
-            note: memosJson[i].Note,
+            note: encryptedNote,
             user: user._id
         })
         newMemos.push(memo);
@@ -96,6 +98,12 @@ const getUser = async (req, res) => {
     })
 }
 
+const getUserSalt = async (req, res) => {
+    
+    let user = await User.findOne({email: req.user.email})
+    res.json({"salt": user.salt })
+}
+
 const signUp = async (req, res) => {
     try {
         let findUser = await User.findOne({email: req.body.email});
@@ -142,11 +150,10 @@ const logIn = async (req, res) => {
 
         if(user)
         {
-            let token = secretModule.encryptString(JSON.stringify({
+            let token = secretModule.encrypt(JSON.stringify({
                 "email": user.email, "ip": req.ip, "exp": new Date(new Date().getTime() + 1 * 1000 * 60 * 60)
-            }))    
+            }), process.env.SECRET_KEY)    
             let resData = {
-                "message": "user successfully logged in",
                 "token": token
             }
             res.cookie("resData", JSON.stringify(resData), 
@@ -155,7 +162,8 @@ const logIn = async (req, res) => {
                 secure: process.env.NODE_ENV!=='development',
                 expires: token.exp
             });
-            res.redirect('/')  
+            res.status(200).json({"salt": user.salt})
+            // res.redirect('/')
             
         } else {
             res.status(401).json({"message": "user name or password incorrect"});
@@ -165,4 +173,4 @@ const logIn = async (req, res) => {
     }
 }
 
-module.exports = { addUser, getUser, signUp, logIn };
+module.exports = { addUser, getUser, getUserSalt, signUp, logIn };

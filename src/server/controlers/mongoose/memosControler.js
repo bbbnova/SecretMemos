@@ -6,12 +6,8 @@ const { ObjectId } = require('mongodb');
 
 
 const getUserMemos = async (req, res) => {
-    
-    console.log('req.headers.authorization')
-    console.log(req.headers.authorization)
-    //req.headers.authorization.split(' ')[1]
-
-
+    let memos = await Memo.find({userId: req.user._id})
+    res.status(200).json(memos)
     // User.findOne({ 
     //     "email": req.body.email, 
     //     "passwordHash": req.body.passwordHash

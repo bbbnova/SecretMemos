@@ -1,0 +1,32 @@
+table {
+    table-layout: fixed;
+    border-collapse: collapse; 
+    width: 1000px;
+}
+ 
+
+td, th { 
+    white-space: pre-wrap; 
+    word-wrap: break-word;
+    border-bottom: solid grey 1px;
+    padding: 5px 10px;
+} 
+
+#categoryTd {
+    width: 10%;
+}
+#applicationTd {
+    width: 15%;
+}
+#accountTd {
+    width: 15%;
+}
+#emailTd {
+    width: 20%;
+}
+#urlTd {
+    width: 20%;
+}
+#noteTd {
+    width: 20%;
+}

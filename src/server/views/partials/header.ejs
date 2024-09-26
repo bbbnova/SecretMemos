@@ -1,7 +1,7 @@
 <nav class="navBar">
     <ul>
         <li class="float-left"><a href="/">SecretNotes</a></li>
-        <% if(locals.email) { %> <li class="float-right"><a href="/"><%-locals.email%></a></li> <% } %>
+        <% if(locals.name) { %> <li class="float-right"><a href="/"><%-locals.name%></a></li> <% } %>
         <% if(locals.isAuthenticated) { %>
             <li class="float-right"><a href="/logout">Logout</a></li>    
         <% } else {%>
