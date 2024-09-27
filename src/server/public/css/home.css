@@ -1,5 +1,11 @@
 .tableWrapper {   
-    
+    background-color: beige;
+    overflow-y: scroll;
+    position: absolute;
+    bottom: 0;
+    top: 130px;
+    left: 0;
+    right: 0
 }
 
 table {  
@@ -7,6 +13,7 @@ table {
     table-layout: fixed;
     border-collapse: collapse; 
     width: 1000px; 
+    
 }
  
 
