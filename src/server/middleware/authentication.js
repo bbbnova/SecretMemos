@@ -2,8 +2,8 @@ const secretModule = require('../secretModule')
 const User = require('../models/userModel')
 
 
-const authenticateUser = async (req, res, next) => {
-
+const authenticateUser = async (req, res, next) => { 
+    
     if(!req.cookies['resData']) {
         res.redirect('/login')
         // res.render('pages/login', { locals: { title: 'Secret Notes', css: '/css/login.css'}, layout: 'layouts/main'});
@@ -31,7 +31,7 @@ const authenticateUser = async (req, res, next) => {
                 // res.render('pages/login', { locals: { title: 'Secret Notes', css: '/css/login.css'}, layout: 'layouts/main'});
                 return;
             }
-
+            
             if(token.ip !== req.ip) {
                 console.log('Token comes from other ip: ' + req.ip + '!==' + token.ip)
                 res.redirect('/login')
@@ -49,12 +49,13 @@ const authenticateUser = async (req, res, next) => {
             }
 
             let user = await User.findOne({email: token.email}, {_id: 0, name: 1, email: 1})
-            if(user) {
+            
+            if(user) { 
                 req.token = token
-                req.isAuthenticated = true;
-                
+                req.isAuthenticated = true;                
                 req.user = user
                 next();
+                return;
             } else {
                 console.log('invalid token user')
                 res.redirect('/login')

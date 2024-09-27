@@ -70,4 +70,17 @@ const getSignUp = (req, res) => {
     res.render('pages/signup', { locals: { title: 'Sign up for Secret Notes', css: '/css/signup.css'}, layout: 'layouts/main'});
 }
 
-module.exports = { getHome, getLogin, getLogout, postLogin, getSignUp }
+const getEditMemo = (req, res) => {
+    res.render('pages/editMemo', {
+        locals: {
+            title: 'Edit password memo', 
+            css: '/css/editMemo.css', 
+            name: req.user.name,
+            email: req.user.email,
+            memoId: req.query.id,
+            isAuthenticated: req.isAuthenticated 
+        }, 
+        layout: 'layouts/main'});
+}
+
+module.exports = { getHome, getLogin, getLogout, postLogin, getSignUp, getEditMemo }

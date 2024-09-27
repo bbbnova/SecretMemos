@@ -10,6 +10,7 @@ router.get('/', authentication.authenticateUser, htmlControler.getHome);
 router.get('/login', htmlControler.getLogin);
 router.get('/logout', htmlControler.getLogout);
 router.get('/signup', htmlControler.getSignUp);
+router.get('/editMemo', authentication.authenticateUser, htmlControler.getEditMemo);
 
 
 module.exports = router;

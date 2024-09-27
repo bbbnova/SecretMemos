@@ -1,7 +1,12 @@
-table {
+.tableWrapper {   
+    
+}
+
+table {  
+    margin: 0 auto;
     table-layout: fixed;
     border-collapse: collapse; 
-    width: 1000px;
+    width: 1000px; 
 }
  
 
@@ -22,11 +27,15 @@ td, th {
     width: 15%;
 }
 #emailTd {
-    width: 20%;
+    width: 15%;
 }
 #urlTd {
-    width: 20%;
+    width: 15%;
 }
 #noteTd {
     width: 20%;
+}
+
+#controlsTd {
+    width: 10%;
 }
