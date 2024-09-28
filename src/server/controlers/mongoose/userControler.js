@@ -27,7 +27,7 @@ const addUser = async (req, res) => {
 
         let pwd = secretModule.decrypt(memosJson[i].Password, 'v1126v')
         
-        let encryptedPwd = secretModule.encrypt(pwd, 'v1126v')
+        let encryptedPwd = secretModule.encryptBrowser(pwd, 'v1126v')
         let encryptedNote = secretModule.encryptBrowser(memosJson[i].Note, 'v1126v')
 
         const memo = await Memo.create({
@@ -42,7 +42,7 @@ const addUser = async (req, res) => {
             user: user._id
         })
         newMemos.push(memo);
-
+        console.log('memo added: ' + memo.applicationName)
         
             
         //     if(!err) {

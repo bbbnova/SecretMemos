@@ -70,17 +70,53 @@ const getSignUp = (req, res) => {
     res.render('pages/signup', { locals: { title: 'Sign up for Secret Notes', css: '/css/signup.css'}, layout: 'layouts/main'});
 }
 
-const getEditMemo = (req, res) => {
-    res.render('pages/editMemo', {
-        locals: {
-            title: 'Edit password memo', 
-            css: '/css/editMemo.css', 
-            name: req.user.name,
-            email: req.user.email,
-            memoId: req.query.id,
-            isAuthenticated: req.isAuthenticated 
-        }, 
-        layout: 'layouts/main'});
+const getEditMemo = async (req, res) => {
+    let memo = await Memo.findOne({_id: req.query.id, user: req.user._id})
+    
+    if(memo) {
+        let categories = await GetDistinctCategories(req.user._id)
+
+        res.render('pages/editMemo', {
+            locals: {
+                title: 'Edit password memo', 
+                css: '/css/editMemo.css', 
+                name: req.user.name,
+                email: req.user.email,
+                memo: memo,
+                categories: categories,
+                isAuthenticated: req.isAuthenticated 
+            }, 
+            layout: 'layouts/main'});
+            return
+    } else {
+        res.sendStatus(404)
+        return
+    }
+    
 }
 
-module.exports = { getHome, getLogin, getLogout, postLogin, getSignUp, getEditMemo }
+const updateMemo = async (req, res) => {  
+    let memo = await Memo.updateOne({_id: req.body._id, user: req.user._id}, { $set: {
+        applicationName: req.body.applicationName,
+        category: req.body.category,
+        accountName: req.body.accountName,
+        email: req.body.email,
+        password: req.body.password,
+        url: req.body.url,
+        note: req.body.note
+    }}) 
+
+    if(memo) {
+        res.redirect('/')
+    } else {
+        console.log('error')
+    }
+}
+
+async function GetDistinctCategories(userId) {
+    return await Memo.distinct('category', {user: userId})
+}
+
+
+
+module.exports = { getHome, getLogin, getLogout, postLogin, getSignUp, getEditMemo, updateMemo }

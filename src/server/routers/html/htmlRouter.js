@@ -12,5 +12,7 @@ router.get('/logout', htmlControler.getLogout);
 router.get('/signup', htmlControler.getSignUp);
 router.get('/editMemo', authentication.authenticateUser, htmlControler.getEditMemo);
 
+router.post('/updateMemo', authentication.authenticateUser, htmlControler.updateMemo);
+
 
 module.exports = router;

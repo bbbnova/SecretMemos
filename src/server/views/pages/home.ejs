@@ -39,6 +39,21 @@
         return response.json();
     }
 
+    async function getMemoPasswordById(id) {
+        let response = await fetch("http://localhost:3000/api/memos/getPasswordById", {
+            method: "POST",
+            body: JSON.stringify({
+                _id: id
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+
+        let password = await response.json();
+        return password
+    }
+
     async function getUserSalt() {
         let response = await fetch("http://localhost:3000/api/user/getSalt", {
             method: "GET"
@@ -80,6 +95,23 @@
         document.querySelectorAll('button.edit').forEach((button) => {
             button.addEventListener('click', (event) => {
                 window.location.href = '/editMemo?id=' + button.dataset.id
+            })
+        })
+
+        document.querySelectorAll('button.copy').forEach((button) => {
+            button.addEventListener('click', async (event) => {
+                let password = await getMemoPasswordById(button.dataset.id)
+                
+                let salt = await getUserSalt()
+                let encryptedPwd = sessionStorage.getItem('pwd')
+                let pwd = await decrypt(encryptedPwd, salt);
+
+                try {
+                    await navigator.clipboard.writeText(await decrypt(password, pwd));
+                    alert('Password copied to clipboard')
+                } catch (err) {
+                    alert(err.message)
+                }
             })
         })
     } 

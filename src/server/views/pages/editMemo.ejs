@@ -1,4 +1,134 @@
-<h1 class="id">memo id: <%- locals.memoId %></h1>
+<h1>Edit memo</h1>
 
+<div class="container">
+    <form id="form" action="/updateMemo" method="post">
+        <input type="hidden" name="_id" value="<%-locals.memo._id%>"/>
+        <div>
+            <label for="applicationName">Application name</label>
+            <input type="text" name="applicationName" id="applicationName" value="<%-locals.memo.applicationName%>"/>
+        </div>
+        
+        <div>
+            <label for="category">Category</label>        
+            <input id="category" name="category" list="categories" value="<%-locals.memo.category%>"/>
+            <datalist id="categories">
+                <% locals.categories.forEach((category) => { %>
+                    <option value="<%-category %>"></option>
+                <% }) %>
+            </datalist>
+        </div>
 
+        <div>
+            <label for="accountName">Account</label>
+            <input type="text" name="accountName" id="accountName" value="<%-locals.memo.accountName%>"/>
+        </div>
+        
+        <div>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" value="<%-locals.memo.email%>"/>
+        </div>
 
+        <div>
+            <label for="password">Password</label>
+            <input type="text" name="password" id="password" value="decrypting ..."/>
+        </div>
+
+        <div>
+            <label for="url">Url</label>
+            <input type="text" name="url" id="url" value="<%-locals.memo.url%>"/>
+        </div>
+
+        <div>
+            <label for="note">Note</label>
+            <textarea name="note" id="note" rows="10" cols="50">decrypting ...</textarea>
+        </div>
+
+        <input type="button" value="Save" name="submit" id="submit" onclick="beforeSubmit()"/>
+        <input type="button" value="Back" name="back" id="back" onclick="cancelEdit()"/>
+        <input type="button" value="Delete" name="delete" id="delete" onclick="deleteMemo('<%-locals.memo._id%>')"/>
+    </form>
+</div>
+
+<script>
+async function deleteMemo(id) {
+    let response = await fetch("http://localhost:3000/api/memos/delete", {
+            method: "POST",
+            body: JSON.stringify({
+                _id: id
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+    if(response.status === 200) {
+        window.location.href = '/'
+    }
+}
+
+    function cancelEdit() { 
+        // window.location.replace('/')
+        history.back()
+    }
+
+    async function beforeSubmit() {
+        let form = document.getElementById('form')
+        
+        if(form.note.value === 'decrypting ...' || form.password.value === 'decrypting ...') {
+            alert('Wait for decrypting!')
+            return
+        }
+
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt);   
+
+        
+
+        form.note.value = await encrypt(form.note.value, pwd)
+        form.password.value = await encrypt(form.password.value, pwd)
+        form.requestSubmit();
+    }
+
+    if(!sessionStorage.getItem('pwd')) {
+        window.location.replace('/login')
+    }
+
+    async function getUserSalt() {
+        let response = await fetch("http://localhost:3000/api/user/getSalt", {
+            method: "GET"
+        })
+        
+        let {salt} = await response.json();
+        return salt;
+    }
+
+    window.onload = async (event) => {     
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt);       
+
+        let note = await decrypt('<%-locals.memo.note%>', pwd)        
+        document.getElementById('note').innerHTML = note;
+        console.log('<%-locals.memo.password%>')
+        console.log(pwd)
+        let passwordField = await decrypt('<%-locals.memo.password%>', pwd)
+        console.log(passwordField)
+        document.getElementById('password').value = passwordField;
+    } 
+</script>
+
+<!-- <div class="select-editable">
+    <select name="category" value="<%-locals.memo.category %>" onchange="this.nextElementSibling.value=this.value">
+        <option value=""></option>
+        <% locals.categories.forEach((category) => { %>
+            <option value="<%-category %>"><%-category %></option>
+        <% }) %>
+    </select>
+    <input type="text" oninput="this.previousElementSibling.options[0].value=this.value; this.previousElementSibling.options[0].innerHTML=this.value" onchange="this.previousElementSibling.selectedIndex=0" value="<%-locals.memo.category %>" />
+</div> -->
+
+<!-- <select name="category" id="category" value="<%-locals.memo.category%>">
+    <% locals.categories.forEach((category) => { %>
+        <option value="<%-category %>"><%-category %></option>
+    <% }) %>
+</select> -->

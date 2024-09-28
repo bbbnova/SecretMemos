@@ -48,8 +48,8 @@ const authenticateUser = async (req, res, next) => {
                 return;
             }
 
-            let user = await User.findOne({email: token.email}, {_id: 0, name: 1, email: 1})
-            
+            let user = await User.findOne({email: token.email}, {_id: 1, name: 1, email: 1})
+            // console.log(user)
             if(user) { 
                 req.token = token
                 req.isAuthenticated = true;                
