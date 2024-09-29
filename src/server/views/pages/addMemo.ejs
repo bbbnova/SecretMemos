@@ -1,0 +1,86 @@
+<h3>add memo</h3>
+
+<div class="container"></div>
+    <form id="form" action="/addMemo" method="post">
+        <div>
+            <label for="applicationName">Application name</label>
+            <input type="text" name="applicationName" id="applicationName"/>
+        </div>
+        
+        <div>
+            <label for="category">Category</label>        
+            <input id="category" name="category" list="categories" />
+            <datalist id="categories">
+                <% locals.categories.forEach((category) => { %>
+                    <option value="<%-category %>"></option>
+                <% }) %>
+            </datalist>
+        </div>
+
+        <div>
+            <label for="accountName">Account</label>
+            <input type="text" name="accountName" id="accountName" />
+        </div>
+        
+        <div>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" />
+        </div>
+
+        <div>
+            <label for="password">Password</label>
+            <input type="text" name="password" id="password" />
+        </div>
+
+        <div>
+            <label for="url">Url</label>
+            <input type="text" name="url" id="url" />
+        </div>
+
+        <div>
+            <label for="note">Note</label>
+            <textarea name="note" id="note" rows="10" cols="50"></textarea>
+        </div>
+
+        <input type="button" value="Save" name="submit" id="submit" onclick="beforeSubmit()"/>
+        <input type="button" value="Back" name="back" id="back" onclick="cancelEdit()"/> 
+    </form>
+</div>
+
+<script>
+    if(!sessionStorage.getItem('pwd')) {
+        window.location.replace('/login')
+    }
+
+    function cancelEdit() { 
+        // window.location.replace('/')
+        history.back()
+    }
+
+    async function beforeSubmit() {
+        let form = document.getElementById('form') 
+
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt);
+        
+        form.note.value = await encrypt(form.note.value, pwd)
+        form.password.value = await encrypt(form.password.value, pwd)
+        form.requestSubmit();
+    }
+
+    
+
+    async function getUserSalt() {
+        let response = await fetch("http://localhost:3000/api/user/getSalt", {
+            method: "GET"
+        })
+        
+        let {salt} = await response.json();
+        return salt;
+    }
+
+    window.onload = async (event) => {     
+        
+    } 
+</script>

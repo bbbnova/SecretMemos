@@ -1,7 +1,9 @@
 <h4>Passwords: </h4>
+<label for='search'>Search</label>
+<input type="search" name="search" id="search"/>
 <br/>
-<input type="search" id="search"/>
-<br/>
+<button id="btnAddNew" onclick="window.location.href='/addMemo'">Add</button>
+
 <div class="tableWrapper">
     <table id="memosTable">   
         <thead>
@@ -63,6 +65,25 @@
         return salt;
     }
 
+    async function initCopyButton(button) { 
+            let password = await getMemoPasswordById(button.dataset.id)
+                
+            let salt = await getUserSalt()
+            let encryptedPwd = sessionStorage.getItem('pwd')
+            let pwd = await decrypt(encryptedPwd, salt);
+
+            try {
+                await navigator.clipboard.writeText(await decrypt(password, pwd));
+                alert('Password copied to clipboard')
+            } catch (err) {
+                alert(err.message)
+            }
+        }
+
+    function initEditButton(button) {
+        window.location.href = '/editMemo?id=' + button.dataset.id
+    }
+
     window.onload = async (event) => {        
         let memos = await getMemos()
         let salt = await getUserSalt()
@@ -89,31 +110,28 @@
             let cell5 = row.insertCell(5)
             cell5.innerHTML = note
             let cell6 = row.insertCell(6)
-            cell6.innerHTML = `<button data-id=${memo._id} class=\"copy\">Copy</button> <button data-id=${memo._id} class=\"edit\">Edit</button>`
-        }
+            cell6.innerHTML = `<button onclick="initCopyButton(this)" data-id="${memo._id}" class=\"copy\">Copy</button>` +
+                `<button onclick="initEditButton(this)" data-id="${memo._id}" class=\"edit\">Edit</button>`
+        } 
+
         
-        document.querySelectorAll('button.edit').forEach((button) => {
-            button.addEventListener('click', (event) => {
-                window.location.href = '/editMemo?id=' + button.dataset.id
-            })
-        })
 
-        document.querySelectorAll('button.copy').forEach((button) => {
-            button.addEventListener('click', async (event) => {
-                let password = await getMemoPasswordById(button.dataset.id)
+        // document.querySelectorAll('button.copy').forEach((button) => {
+        //     button.addEventListener('click', async () => {
+        //         let password = await getMemoPasswordById(button.dataset.id)
                 
-                let salt = await getUserSalt()
-                let encryptedPwd = sessionStorage.getItem('pwd')
-                let pwd = await decrypt(encryptedPwd, salt);
+        //         let salt = await getUserSalt()
+        //         let encryptedPwd = sessionStorage.getItem('pwd')
+        //         let pwd = await decrypt(encryptedPwd, salt);
 
-                try {
-                    await navigator.clipboard.writeText(await decrypt(password, pwd));
-                    alert('Password copied to clipboard')
-                } catch (err) {
-                    alert(err.message)
-                }
-            })
-        })
+        //         try {
+        //             await navigator.clipboard.writeText(await decrypt(password, pwd));
+        //             alert('Password copied to clipboard')
+        //         } catch (err) {
+        //             alert(err.message)
+        //         }
+        //     })
+        // })
     } 
 
     

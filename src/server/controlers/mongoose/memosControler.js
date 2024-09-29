@@ -7,17 +7,7 @@ const { ObjectId } = require('mongodb');
 
 const getUserMemos = async (req, res) => {
     let memos = await Memo.find({user: req.user._id})
-    res.status(200).json(memos)
-    // User.findOne({ 
-    //     "email": req.body.email, 
-    //     "passwordHash": req.body.passwordHash
-    // })
-    // .populate('memos')
-    // .then(user => {
-    //     res.status(200).json({
-    //         "user _id": user
-    //     })
-    // })
+    res.status(200).json(memos) 
 }
 
 const getMemoPasswordById = async (req, res) => {
@@ -53,4 +43,24 @@ const updateMemo = async (req, res) => {
     }
 } 
 
-module.exports = { getUserMemos, getMemoPasswordById , deleteMemo, updateMemo};
+const addmemo = async (req, res) => {
+    try {
+        let memo = await Memo.create({
+            applicationName: req.body.applicationName,
+            category: req.body.category,
+            accountName: req.body.accountName,
+            email: req.body.email,
+            password: req.body.password,
+            url: req.body.url,
+            note: req.body.note
+        })
+        if(memo) {
+            res.status(200).json(memo)
+        }
+    } catch(err) {
+        console.log(err)
+        res.sendStatus(402)
+    }
+}
+
+module.exports = { getUserMemos, getMemoPasswordById , deleteMemo, updateMemo, addmemo};

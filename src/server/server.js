@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 var cookieParser = require('cookie-parser');
 const userRouter = require('./routers/api/userRouter');
 const memosRouter = require('./routers/api/memosRouter');
-const htmlRouter = require('./routers/html/htmlRouter');
+const htmlHomeRouter = require('./routers/html/htmlHomeRouter');
+const htmlMemosRouter = require('./routers/html/htmlMemosRouter');
+const htmlNotesRouter = require('./routers/html/htmlNotesRouter');
 const path = require('path');
 const { sleep } = require('./helper');
 require('dotenv').config();
@@ -23,13 +25,17 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(expressLayouts);
 app.set('trust proxy', true);
 
+
 app.use('/api/user', userRouter); 
 app.use('/api/memos', memosRouter); 
-app.use('/', htmlRouter);
+
+app.use('/', htmlHomeRouter);
+app.use('/memos', htmlMemosRouter);
+app.use('/notes', htmlNotesRouter);
+
 app.use('', (req, res) => {
     res.status(404).render('pages/404', {layout: 'layouts/main'})
 });
-
 
 mongoose.connect(process.env.DATA_CONNECTION_STRING).then(() => {
     console.log('Database connected.');
