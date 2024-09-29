@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const noteSchema = new mongoose.Schema({
     noteId: String,
-    title: String,    
-    category: String,
+    title: String,
     description: String,
     number: Number,
     pages: [{

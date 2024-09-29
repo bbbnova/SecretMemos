@@ -1,1 +1,11 @@
-<h3>Notes</h3>
+<h4>Notes: </h4>
+<label for='search'>Search</label>
+<input type="search" name="search" id="search"/>
+<br/>
+<button id="btnAddNew" onclick="window.location.href='/notes/add'">Add</button>
+
+<div class="container">
+    <div class="notes">
+        <% locals.notes %>
+    </div>
+</div>

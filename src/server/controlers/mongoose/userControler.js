@@ -1,5 +1,7 @@
 const User = require('../../models/userModel');
 const Memo = require('../../models/memoModel');
+const Note = require('../../models/noteModel');
+const Page = require('../../models/pageModel');
 const secretModule = require('../../secretModule');
 const crypto = require('crypto')
 
@@ -9,7 +11,10 @@ const { json } = require('express');
 const addUser = async (req, res) => {
 
     let memosResult = secretModule.decrypt(req.body.encryptedMemos, 'v1126v')
-    let memosJson = JSON.parse(memosResult);            
+    let memosJson = JSON.parse(memosResult);
+
+    let notesResult = secretModule.decrypt(req.body.encryptedNotes, 'v1126v')
+    let notesJson = JSON.parse(notesResult);
 
     const user = await User.create({
         name: req.body.name,
@@ -43,42 +48,50 @@ const addUser = async (req, res) => {
         })
         newMemos.push(memo);
         console.log('memo added: ' + memo.applicationName)
-        
-            
-        //     if(!err) {
-        //         console.log(': pwd --> ' + pwd)
-        //         encryptedPwd = secretModule.getHash(pwd)
-        //         // await secretModule.encryptBrowser(pwd, 'v1126v', async (error, encryptedPwd) =>
-        //         // {
-        //         //     if(!error) {
-        //         //         console.log(': pwd --> ' + encryptedPwd)
-
-        //                 // const memo = await Memo.create({
-        //                 //     accountName: memosJson[i].AccountName,
-        //                 //     memoId: memosJson[i].MemoId,
-        //                 //     category: memosJson[i].Category,
-        //                 //     applicationName: memosJson[i].ApplicaionName,
-        //                 //     email: memosJson[i].Email,
-        //                 //     password: encryptedPwd,
-        //                 //     url: memosJson[i].Url,
-        //                 //     note: memosJson[i].Note,
-        //                 //     user: user._id
-        //                 // })
-        //                 // newMemos.push(memo);
-        //             // }   
-        //             // else {
-        //             //     console.log('ERROR 2: '+ error)
-        //             // }
-        //         // })
-        //     } else {
-        //         console.log('ERROR 1: '+ err)
-        //     }
-            
-        // })                
     }
+
+    const newNotes = [];
+    for(var i = 0; i < notesJson.length; i++) {
+
+        // let content = secretModule.decrypt(notesJson[i].Content, 'v1126v')        
+        // let encryptedContent = secretModule.encryptBrowser(content, 'v1126v')
+        
+        const note = await Note.create({
+            title: notesJson[i].Title,
+            noteId: notesJson[i].noteId,
+            description: notesJson[i].Description, 
+            number: i + 1,
+            version: notesJson[i].version,
+            user: user._id
+        })
+
+        const newPages = [];
+        for(var p = 0; p < notesJson[i].Pages.length; p++) {
+            // notesJson[i].Pages[p]
+
+            const page = await Page.create({
+                number: notesJson[i].Pages[p].Number,
+                title: notesJson[i].Pages[p].Name,
+                note: note._id,
+                user: user._id,
+                content: secretModule.encryptBrowser(secretModule.decrypt(notesJson[i].Pages[p].Content, 'v1126v'), 'v1126v') 
+            })
+
+            newPages.push(page)
+            console.log('page added: ' + page.title)
+        }
+        await note.pages.push(...newPages)
+        await note.save();
+
+        newNotes.push(note);
+        console.log('note added: ' + note.title)
+    }
+
+    await user.notes.push(...newNotes)
     await user.memos.push(...newMemos)
     await user.save();
     await user.populate('memos') 
+    await user.populate('notes')
     
     res.status(200).json(user); 
 }

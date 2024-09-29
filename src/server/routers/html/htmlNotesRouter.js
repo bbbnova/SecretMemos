@@ -8,7 +8,7 @@ app.use(express.json());
 
 router.get('/', authorization.authorizeUser, htmlNotesControler.getNotes);
 // router.get('/editMemo', authentication.authenticateUser, htmlControler.getEditMemo);
-// router.get('/addMemo', authentication.authenticateUser, htmlControler.getAddMemo);
+router.get('/add', authorization.authorizeUser, htmlNotesControler.getAddNote);
 // router.post('/addMemo', authentication.authenticateUser, htmlControler.addMemo);
 // router.post('/updateMemo', authentication.authenticateUser, htmlControler.updateMemo);
 
