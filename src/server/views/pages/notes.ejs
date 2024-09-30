@@ -6,6 +6,12 @@
 
 <div class="container">
     <div class="notes">
-        <% locals.notes %>
+        <% for(let i = 0; i < locals.notes.length; i ++) { %>
+            <a class="note" href="/notes/note?id=<%-locals.notes[i]._id%>">
+                <h4><%-locals.notes[i].title%></h4>
+                <p><%-locals.notes[i].description%></p>
+                <br/>
+            </a>
+        <% } %>
     </div>
 </div>

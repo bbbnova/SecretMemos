@@ -29,4 +29,25 @@ const getAddNote = async (req, res) => {
     })
 }
 
-module.exports = { getNotes, getAddNote }
+const getEditNote = async (req, res) => {
+
+    let note = await Note.findOne({_id: req.query.id, user: req.user._id}).populate('pages').populate('user')
+    // await note.populate('pages')
+    // await note.populate('user')
+
+    if(note) {
+        res.render('pages/editNote', {
+            locals: {
+                title: 'SecretNotes', 
+                css: '/css/home.css', 
+                name: req.user.name,
+                email: req.user.email,
+                note: note,
+                isAuthenticated: req.isAuthenticated },
+            layout: 'layouts/main'
+        })
+    }
+    
+}
+
+module.exports = { getNotes, getAddNote, getEditNote }

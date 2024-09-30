@@ -1,0 +1,40 @@
+
+<div class="container"> 
+    <input name="title" id="title" type="text" value="<%=locals.note.title%>"/>
+    <br/>
+    <input name="description" id="description" placeholder="description" type="text" value="<%-locals.note.description%>"/>
+
+    <div class="pages">
+        <% for(let i = 0; i < locals.note.pages.length; i++) {%>
+            <button data-page="<%=JSON.stringify(locals.note.pages[i])%>" onclick="pageClick(this)"><%-locals.note.pages[i].title%></button>
+        <% } %>
+    </div>
+
+    <div class="pageContent">
+        <textarea id="pageText" cols="50" rows="50">
+
+        </textarea>
+    </div>
+</div>
+
+<script>
+    async function getUserSalt() {
+        let response = await fetch("http://localhost:3000/api/user/getSalt", {
+            method: "GET"
+        })
+        
+        let {salt} = await response.json();
+        return salt;
+    }
+
+    async function pageClick(button) {
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt); 
+
+        let page = JSON.parse(button.dataset.page)
+        document.getElementById('pageText').value = await decrypt(page.content, pwd)
+    }
+
+    
+</script>
