@@ -9,15 +9,41 @@
             <button data-page="<%=JSON.stringify(locals.note.pages[i])%>" onclick="pageClick(this)"><%-locals.note.pages[i].title%></button>
         <% } %>
     </div>
-
+    <br/>
+    <br/>
+    <br/>
     <div class="pageContent">
-        <textarea id="pageText" cols="50" rows="50">
+        <!-- <textarea id="pageText" cols="50" rows="50">
 
-        </textarea>
+        </textarea> -->
+
+        <div class="main-container">
+            <div class="editor-container editor-container_inline-editor" id="editor-container">
+                <div class="editor-container__editor">
+                    <div id="editor"></div>
+                </div>
+            </div>
+        </div>
+        
     </div>
+
+    <button id="btnSave" onclick="saveData()">Save</button>
 </div>
 
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "/ckeditor/ckeditor5/ckeditor5.js",
+            "ckeditor5/": "/ckeditor/ckeditor5/"
+        }
+    }
+</script>
+
+<script type="module" src="/ckeditor/main.js"></script>
+
 <script>
+    let currentPage;
+
     async function getUserSalt() {
         let response = await fetch("http://localhost:3000/api/user/getSalt", {
             method: "GET"
@@ -28,13 +54,45 @@
     }
 
     async function pageClick(button) {
+        const domEditableElement = document.querySelector( '.ck-editor__editable_inline' ); 
+        const editor = domEditableElement.ckeditorInstance; 
+        
+
         let salt = await getUserSalt()
         let encryptedPwd = sessionStorage.getItem('pwd')
         let pwd = await decrypt(encryptedPwd, salt); 
 
-        let page = JSON.parse(button.dataset.page)
-        document.getElementById('pageText').value = await decrypt(page.content, pwd)
+        let page = currentPage = JSON.parse(button.dataset.page)
+        // document.getElementById('pageText').value = await decrypt(page.content, pwd)
+        editor.setData(await decrypt(page.content, pwd));
+        
     }
 
-    
+    async function saveData() {
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt);  
+        
+        const domEditableElement = document.querySelector( '.ck-editor__editable_inline' ); 
+        const editor = domEditableElement.ckeditorInstance;
+        let data = editor.getData();
+        data = await encrypt(data, pwd)
+        editor.setData(data)
+        //update page
+    }
+
+    const loadFirstPage = async () => {
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt); 
+
+        let page = JSON.parse('<%- JSON.stringify(locals.note.pages[0]) %>')
+        currentPage = page
+        const domEditableElement = document.querySelector( '.ck-editor__editable_inline' ); 
+        const editor = domEditableElement.ckeditorInstance; 
+
+        editor.setData(await decrypt(page.content, pwd));
+    }
+
+    loadFirstPage()
 </script>
