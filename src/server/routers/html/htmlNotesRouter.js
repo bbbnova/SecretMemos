@@ -9,8 +9,9 @@ app.use(express.json());
 router.get('/', authorization.authorizeUser, htmlNotesControler.getNotes);
 router.get('/note', authorization.authorizeUser, htmlNotesControler.getEditNote);
 router.get('/add', authorization.authorizeUser, htmlNotesControler.getAddNote);
-// router.post('/addMemo', authorization.authorizeUser, htmlNotesControler.addMemo);
-// router.post('/updateMemo', authorization.authorizeUser, htmlNotesControler.updateMemo);
+
+router.post('/addNote', authorization.authorizeUser, htmlNotesControler.addNote);
+router.post('/updateMemo', authorization.authorizeUser, htmlNotesControler.updateNote);
 
 
 module.exports = router;

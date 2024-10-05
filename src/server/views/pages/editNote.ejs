@@ -1,8 +1,10 @@
 
-<div class="container"> 
+<form id="form" class="container"> 
     <input name="title" id="title" type="text" value="<%=locals.note.title%>"/>
     <br/>
     <input name="description" id="description" placeholder="description" type="text" value="<%-locals.note.description%>"/>
+    <br/>
+    <input name="number" id="number" type="number" value="<%-locals.note.number%>"/>
 
     <div class="pages">
         <% for(let i = 0; i < locals.note.pages.length; i++) {%>
@@ -28,7 +30,7 @@
     </div>
 
     <button id="btnSave" onclick="saveData()">Save</button>
-</div>
+</form>
 
 <script type="importmap">
     {
@@ -69,16 +71,37 @@
     }
 
     async function saveData() {
+        let form = document.getElementById('form')
+
         let salt = await getUserSalt()
         let encryptedPwd = sessionStorage.getItem('pwd')
         let pwd = await decrypt(encryptedPwd, salt);  
         
         const domEditableElement = document.querySelector( '.ck-editor__editable_inline' ); 
         const editor = domEditableElement.ckeditorInstance;
+
         let data = editor.getData();
         data = await encrypt(data, pwd)
-        editor.setData(data)
+        
         //update page
+        //update note
+        let response = await fetch("http://localhost:3000/api/notes/update", {
+                method: "POST",
+                body: JSON.stringify({
+                    _id: note._id,
+                    title: form.title.value,
+                    number: form.number.value,
+                    description: form.description.value,
+                    page_id: currentPage._id,
+                    page_content: data
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+        if(response.status === 200) {
+            window.location.href = '/notes'
+        }
     }
 
     const loadFirstPage = async () => {
@@ -94,5 +117,8 @@
         editor.setData(await decrypt(page.content, pwd));
     }
 
-    loadFirstPage()
+    let note = JSON.parse('<%- JSON.stringify(locals.note) %>')
+    if(note.pages.length > 0) {
+        loadFirstPage()
+    }
 </script>

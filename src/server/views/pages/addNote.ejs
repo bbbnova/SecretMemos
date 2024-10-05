@@ -1,1 +1,89 @@
 <h3>add note</h3>
+<div class="container"></div>
+    <form id="form" action="/notes/addNote" method="post">
+        <div>
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title"/>
+        </div>
+
+        <div>
+            <label for="description">Description</label>
+            <input type="text" name="description" id="description" />
+        </div>
+
+        <div>
+            <label for="pageTitle">Title</label>
+            <input type="text" name="pageTitle" id="pageTitle"/>
+        </div>
+
+        <div class="main-container">
+            <div class="editor-container editor-container_inline-editor" id="editor-container">
+                <div class="editor-container__editor">
+                    <div id="editor"></div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="pageContent" name="pageContent"/>
+        
+        <input type="button" value="Save" name="submit" id="submit" onclick="beforeSubmit()"/>
+        <input type="button" value="Back" name="back" id="back" onclick="cancelEdit()"/> 
+    </form>
+</div>
+
+
+
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "/ckeditor/ckeditor5/ckeditor5.js",
+            "ckeditor5/": "/ckeditor/ckeditor5/"
+        }
+    }
+</script>
+
+<script type="module" src="/ckeditor/main.js"></script>
+
+
+<script>
+    function getEditor() {
+        const domEditableElement = document.querySelector( '.ck-editor__editable_inline' ); 
+        const editor = domEditableElement.ckeditorInstance; 
+        return editor;
+    }
+
+    
+
+    if(!sessionStorage.getItem('pwd')) {
+        window.location.replace('/login')
+    }
+
+    function cancelEdit() { 
+        // window.location.replace('/')
+        history.back()
+    }
+
+    async function getUserSalt() {
+        let response = await fetch("http://localhost:3000/api/user/getSalt", {
+            method: "GET"
+        })
+        
+        let {salt} = await response.json();
+        return salt;
+    }
+
+    async function beforeSubmit() {
+        let editor = getEditor()
+        let form = document.getElementById('form') 
+
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt);
+        
+        form.pageContent.value = await encrypt(editor.getData(), pwd)
+        form.requestSubmit();
+    }
+
+    window.onload = async (event) => {     
+        
+    } 
+</script>

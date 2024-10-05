@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 var cookieParser = require('cookie-parser');
 const userRouter = require('./routers/api/userRouter');
 const memosRouter = require('./routers/api/memosRouter');
+const notesRouter = require('./routers/api/notesRouter');
 const htmlHomeRouter = require('./routers/html/htmlHomeRouter');
 const htmlMemosRouter = require('./routers/html/htmlMemosRouter');
 const htmlNotesRouter = require('./routers/html/htmlNotesRouter');
@@ -28,6 +29,7 @@ app.set('trust proxy', true);
 
 app.use('/api/user', userRouter); 
 app.use('/api/memos', memosRouter); 
+app.use('/api/notes', notesRouter); 
 
 app.use('/', htmlHomeRouter);
 app.use('/memos', htmlMemosRouter);

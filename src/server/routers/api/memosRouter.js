@@ -11,5 +11,5 @@ router.get('/get', authorization.authorizeUser, memosControler.getUserMemos)
 router.post('/getPasswordById', authorization.authorizeUser, memosControler.getMemoPasswordById)
 router.post('/delete', authorization.authorizeUser, memosControler.deleteMemo)
 router.post('/update', authorization.authorizeUser, memosControler.updateMemo)
-router.post('/add', authorization.authorizeUser, memosControler.addmemo)
+router.post('/add', authorization.authorizeUser, memosControler.addMemo)
 module.exports = router;

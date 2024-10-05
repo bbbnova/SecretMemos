@@ -6,19 +6,39 @@ const { ObjectId } = require('mongodb');
 
 
 const getUserMemos = async (req, res) => {
-    let memos = await Memo.find({user: req.user._id})
-    res.status(200).json(memos) 
+    try {
+        let memos = await Memo.find({user: req.user._id})
+        if(memos) {
+            res.status(200).json(memos) 
+        }
+        else {
+            console.log(err)
+            res.sendStatus(500)
+        }
+    } catch(err) {
+        console.log(err)
+        res.sendStatus(500)
+    }
 }
 
 const getMemoPasswordById = async (req, res) => {
-    let memo = await Memo.findOne({user: req.user._id, _id: req.body._id})
-    res.status(200).json(memo.password)
+    try {
+        let memo = await Memo.findOne({user: req.user._id, _id: req.body._id})
+        if(memo) {
+            res.status(200).json(memo.password)
+        } else {
+            res.sendStatus(500)
+        }
+    } catch(err) {
+        console.log(err)
+        res.sendStatus(500)
+    }
 }
 
 const deleteMemo = async (req, res) => {
     try {
         let memo = await Memo.deleteOne({user: req.user._id, _id: req.body._id})
-        res.sendStatus(200)
+        res.status(200).json(memo)
     } catch(err) {
         console.log(err)
         res.sendStatus(500)
@@ -36,14 +56,14 @@ const updateMemo = async (req, res) => {
             url: req.body.url,
             note: req.body.note
         }}) 
-        res.sendStatus(200)
+        res.status(200).json(memo)
     } catch(err) {
         console.log(err)
         res.sendStatus(500)
     }
 } 
 
-const addmemo = async (req, res) => {
+const addMemo = async (req, res) => {
     try {
         let memo = await Memo.create({
             applicationName: req.body.applicationName,
@@ -63,4 +83,4 @@ const addmemo = async (req, res) => {
     }
 }
 
-module.exports = { getUserMemos, getMemoPasswordById , deleteMemo, updateMemo, addmemo};
+module.exports = { getUserMemos, getMemoPasswordById , deleteMemo, updateMemo, addMemo};
