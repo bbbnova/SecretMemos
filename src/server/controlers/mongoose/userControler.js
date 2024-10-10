@@ -112,9 +112,20 @@ const getUser = async (req, res) => {
 }
 
 const getUserSalt = async (req, res) => {
-    
-    let user = await User.findOne({email: req.user.email})
-    res.json({"salt": user.salt })
+    try{
+        let user = await User.findOne({email: req.user.email})
+        if(user) {
+            res.status(200).json({"salt": user.salt })
+        }
+        else {
+            console.log('error loading user')
+            res.sendStatus(500)
+        }
+    }
+    catch(err) {
+        console.error(err)
+        res.sendStatus(500)
+    }
 }
 
 const signUp = async (req, res) => {

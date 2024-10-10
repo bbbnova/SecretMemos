@@ -1,12 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
-var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
+
 const userRouter = require('./routers/api/userRouter');
 const memosRouter = require('./routers/api/memosRouter');
 const notesRouter = require('./routers/api/notesRouter');
+const pagesRouter = require('./routers/api/pagesRouter')
+
 const htmlHomeRouter = require('./routers/html/htmlHomeRouter');
 const htmlMemosRouter = require('./routers/html/htmlMemosRouter');
 const htmlNotesRouter = require('./routers/html/htmlNotesRouter');
+
 const path = require('path');
 const { sleep } = require('./helper');
 require('dotenv').config();
@@ -30,6 +34,7 @@ app.set('trust proxy', true);
 app.use('/api/user', userRouter); 
 app.use('/api/memos', memosRouter); 
 app.use('/api/notes', notesRouter); 
+app.use('/api/pages', pagesRouter); 
 
 app.use('/', htmlHomeRouter);
 app.use('/memos', htmlMemosRouter);

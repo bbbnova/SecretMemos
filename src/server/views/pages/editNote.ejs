@@ -7,14 +7,17 @@
     <input name="number" id="number" type="number" value="<%-locals.note.number%>"/>
 
     <div class="pages">
-        <% for(let i = 0; i < locals.note.pages.length; i++) {%>
-            <button data-page="<%=JSON.stringify(locals.note.pages[i])%>" onclick="pageClick(this)"><%-locals.note.pages[i].title%></button>
+        <% let i = 0 %>
+        <% for(i = 0; i < locals.note.pages.length; i++) {%>
+            <button class="page" type="button" data-page="<%=locals.note.pages[i]._id%>" onclick="pageClick(this)"><%-locals.note.pages[i].title%></button>
         <% } %>
+        <button type="button" id="btnAddNewPage" onclick="addNewPage('<%- i %>')">add page</button>
     </div>
     <br/>
     <br/>
     <br/>
     <div class="pageContent">
+
         <!-- <textarea id="pageText" cols="50" rows="50">
 
         </textarea> -->
@@ -29,7 +32,8 @@
         
     </div>
 
-    <button id="btnSave" onclick="saveData()">Save</button>
+    <button id="btnSave" type="button" onclick="saveData()">Save</button>
+    <button id="btnDelete" type="button" onclick="deletePage()">Delete</button>
 </form>
 
 <script type="importmap">
@@ -47,12 +51,20 @@
     let currentPage;
 
     async function getUserSalt() {
-        let response = await fetch("http://localhost:3000/api/user/getSalt", {
-            method: "GET"
-        })
-        
-        let {salt} = await response.json();
-        return salt;
+        try {
+            let response = await fetch("http://localhost:3000/api/user/getSalt", {
+                method: "GET" 
+            })
+            
+            if(response.status === 200) {
+                let {salt} = await response.json();
+                return salt;
+            } else {
+                console.log('error geting user salt')
+            }
+        } catch(err) {
+            console.error(err)
+        }
     }
 
     async function pageClick(button) {
@@ -64,10 +76,62 @@
         let encryptedPwd = sessionStorage.getItem('pwd')
         let pwd = await decrypt(encryptedPwd, salt); 
 
-        let page = currentPage = JSON.parse(button.dataset.page)
-        // document.getElementById('pageText').value = await decrypt(page.content, pwd)
-        editor.setData(await decrypt(page.content, pwd));
-        
+        let pageId = button.dataset.page
+        let response = await fetch("http://localhost:3000/api/pages/get", {
+            method: "POST",
+            body: JSON.stringify({
+                page_id: pageId
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+
+        if(response.status === 200) {
+            currentPage = await response.json()
+            editor.setData(await decrypt(currentPage.content, pwd));
+            document.querySelector(".pageContent").classList.remove("hidden")
+        } 
+        else {
+            console.log('can not fing page')
+        }
+    }
+
+    async function addNewPage(number) { 
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt); 
+
+        let response = await fetch("http://localhost:3000/api/pages/add", {
+                method: "POST",
+                body: JSON.stringify({
+                    _id: note._id,
+                    title: 'title',
+                    number: number,
+                    description: 'description',
+                    note_id: note._id,
+                    page_content: await encrypt('data here', pwd)
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+        if(response.status === 200) {
+            let newPage = currentPage = await response.json()
+            //add html
+            let divPages = document.querySelector('div.pages') 
+
+            let btn = document.createElement('button')
+            btn.setAttribute('data-page', newPage._id)  
+            btn.classList.add('page')  
+            btn.setAttribute('onClick', 'javascript: pageClick(this)') 
+            btn.setAttribute('type', 'button') 
+            // btn.onclick = await pageClick(btn)
+            btn.innerHTML = newPage.title
+            divPages.insertBefore(btn, document.getElementById('btnAddNewPage'))
+            pageClick(btn)
+            return newPage;
+        }
     }
 
     async function saveData() {
@@ -86,21 +150,41 @@
         //update page
         //update note
         let response = await fetch("http://localhost:3000/api/notes/update", {
+            method: "POST",
+            body: JSON.stringify({
+                _id: note._id,
+                title: form.title.value,
+                number: form.number.value,
+                description: form.description.value,
+                page_id: currentPage._id,
+                page_content: data
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        
+        if(response.status === 200) {
+            // window.location.href = '/notes'
+            //window.location.reload()
+            //saved message to user
+        }
+    }
+
+    async function deletePage() {
+        let response = await fetch("http://localhost:3000/api/pages/delete", {
                 method: "POST",
                 body: JSON.stringify({
-                    _id: note._id,
-                    title: form.title.value,
-                    number: form.number.value,
-                    description: form.description.value,
-                    page_id: currentPage._id,
-                    page_content: data
+                    page_id: currentPage._id
                 }),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8"
                 }
             })
         if(response.status === 200) {
-            window.location.href = '/notes'
+            // window.location.reload()
+            let btnPage = document.querySelector('.page[data-page="'+ currentPage._id +'"]').remove() 
+            await loadFirstPage()
         }
     }
 
@@ -108,17 +192,16 @@
         let salt = await getUserSalt()
         let encryptedPwd = sessionStorage.getItem('pwd')
         let pwd = await decrypt(encryptedPwd, salt); 
+        let pages = document.querySelectorAll(".page")
 
-        let page = JSON.parse('<%- JSON.stringify(locals.note.pages[0]) %>')
-        currentPage = page
-        const domEditableElement = document.querySelector( '.ck-editor__editable_inline' ); 
-        const editor = domEditableElement.ckeditorInstance; 
-
-        editor.setData(await decrypt(page.content, pwd));
+        if(pages.length > 0) {
+            await pageClick(pages[0])
+            document.querySelector(".pageContent").classList.remove('hidden')
+        } else {
+            document.querySelector(".pageContent").classList.add('hidden')
+        }
     }
 
     let note = JSON.parse('<%- JSON.stringify(locals.note) %>')
-    if(note.pages.length > 0) {
-        loadFirstPage()
-    }
+    loadFirstPage()
 </script>

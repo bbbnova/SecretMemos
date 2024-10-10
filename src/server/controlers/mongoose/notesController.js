@@ -29,8 +29,7 @@ const deleteNote = async (req, res) => {
     }
 }
 
-const updateNote = async (req, res) => {
-    console.log(req.body)
+const updateNote = async (req, res) => { 
     try {
         let noteResult = await Note.updateOne(
             {_id: req.body._id, user: req.user._id}, 
@@ -40,21 +39,32 @@ const updateNote = async (req, res) => {
                     description: req.body.description,
                     number: Number(req.body.number) 
                 }
-        }) 
-        if(noteResult) {
+        })  
+        
+        if(noteResult.matchedCount === 1)
+        {
             let pageResult = await Page.updateOne({_id: req.body.page_id, user: req.user._id}, {
                 $set: {
                     content: req.body.page_content
                 }
             })
 
-            if(pageResult) { 
+            if(pageResult.matchedCount === 1) {
                 res.sendStatus(200)
+                return;
+            } else {
+                res.sendStatus(500)
+                console.error('error updateing page')
+                return;     
             }
-        }        
+        } else {
+            res.sendStatus(500)
+            console.error('error updateing note')
+            return;     
+        }          
         
     } catch(err) {
-        console.log(err)
+        console.error(err)
         res.sendStatus(500)
     }
 }
