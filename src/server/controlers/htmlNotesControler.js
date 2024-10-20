@@ -9,6 +9,7 @@ const getNotes = async (req, res) => {
     res.render('pages/notes', {
         locals: {
             title: 'SecretNotes', 
+            nav: 'notes',
             css: '/css/home.css', 
             name: req.user.name,
             email: req.user.email,
@@ -22,6 +23,7 @@ const getAddNote = async (req, res) => {
     res.render('pages/addNote', {
         locals: {
             title: 'SecretNotes', 
+            nav: 'notes',
             css: '/css/home.css', 
             name: req.user.name,
             email: req.user.email,
@@ -40,6 +42,7 @@ const getEditNote = async (req, res) => {
         res.render('pages/editNote', {
             locals: {
                 title: 'SecretNotes', 
+                nav: 'notes',
                 css: '/css/home.css', 
                 name: req.user.name,
                 email: req.user.email,

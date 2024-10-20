@@ -9,6 +9,7 @@ const getMemos = async (req, res) => {
     res.render('pages/memos', {
         locals: {
             title: 'Secret Notes', 
+            nav: 'memos',
             css: '/css/memos.css', 
             name: req.user.name,
             email: req.user.email,
@@ -27,6 +28,7 @@ const getEditMemo = async (req, res) => {
         res.render('pages/editMemo', {
             locals: {
                 title: 'Edit password memo', 
+                nav: 'memos',
                 css: '/css/editMemo.css', 
                 name: req.user.name,
                 email: req.user.email,
@@ -49,6 +51,7 @@ const getAddMemo = async (req,res) => {
     res.render('pages/addMemo', {
         locals: {
             title: 'Add new memo', 
+            nav: 'memos',
             css: '/css/addMemo.css', 
             name: req.user.name,
             email: req.user.email,

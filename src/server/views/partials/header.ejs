@@ -1,16 +1,14 @@
 <nav class="navBar">
     <ul>
-        <li class="float-left"><a href="/">Home</a></li>
-        <li class="float-left"><a href="/memos">SecretMemos</a></li>
-        <li class="float-left"><a href="/notes">SecretNotes</a></li>
+        <li <% if(locals.nav === 'home') { %> class="float-left active" <% } else { %> class="float-left" <% } %> ><a href="/">Home</a></li>
+        <li <% if(locals.nav === 'memos') { %> class="float-left active" <% } else { %> class="float-left" <% } %> ><a href="/memos">SecretMemos</a></li>
+        <li <% if(locals.nav === 'notes') { %> class="float-left active" <% } else { %> class="float-left" <% } %> ><a href="/notes">SecretNotes</a></li>
         <% if(locals.isAuthenticated) { %>
             <li class="float-right"><a href="/logout">Logout</a></li>    
             <% if(locals.name) { %> <li class="float-right"><a href="#"><%-locals.name%></a></li> <% } %>
         <% } else {%>
-        
-        
-            <li class="float-right"><a href="/login">Login</a></li>
-            <li class="float-right"><a href="/signup">Sign up</a></li>
+            <li <% if(locals.nav === 'login') { %> class="float-right active" <% } else { %> class="float-right" <% } %> ><a href="/login">Login</a></li>
+            <li <% if(locals.nav === 'signup') { %> class="float-right active" <% } else { %> class="float-right" <% } %> ><a href="/signup">Sign up</a></li>
         <% }%>
     </ul>
 </nav>

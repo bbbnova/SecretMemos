@@ -1,16 +1,17 @@
 
+<div class="container">
+    <% if(locals.isAuthenticated) { %>
 
-<% if(locals.isAuthenticated) { %>
+        <h2>Dashboard</h2>
+        <label>name</label>
+        <h3><%=locals.name%></h3>
+        <br/>
+        <label>email</label>
+        <h3><%=locals.email%></h3>
 
-    <h2>Dashboard</h2>
-    <label>name</label>
-    <h3><%=locals.name%></h3>
-    <br/>
-    <label>email</label>
-    <h3><%=locals.email%></h3>
+    <% } else { %>
 
-<% } else { %>
+        <h3>Please, Sign in</h3>
 
-    <h3>Please, Sign in</h3>
-
-<% } %>
+    <% } %>
+</div>
