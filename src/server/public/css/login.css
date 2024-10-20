@@ -6,8 +6,10 @@
 }
 
 .container { 
-	border: solid gray 1px;
-	background-color: lightgray; 
+	border: solid #bbb 0px;
+	border-radius: 6px;
+	background-color: #f1f1f1; 
+	box-shadow: 0px 0px 8px -2px #00000099 ;
 	width: 300px;
 	position: absolute;
 	top: 50%;
@@ -26,6 +28,61 @@
 
 @media only screen and (max-width: 600px) {
 	.container {
-	  width: 100%;
+		width: 100%;
 	}
+}
+
+
+input[type=email], input[type=password] {
+	margin: 5px 0;
+	font-size: 12pt;
+	vertical-align: baseline;
+	font-weight: 400;
+	line-height: 1.29;
+	letter-spacing: .16px;
+	border-radius: 0px;	
+	outline: none;
+	width: 100%;
+	height: 30px;
+	border: none;
+	border-bottom: 2px solid transparent;
+	transition: border-bottom-color 0.3s ease-out;
+	background-color: #fbfbfb;
+	padding: 0 6px;
+	color: #111; 
+}
+
+input[type=email]:focus, input[type=password]:focus{
+	outline: none; 	
+	border-bottom-color: #22ae22;
+} 
+
+button.login_submit {
+	display: inline-block;
+	padding: 5px 10px;
+	font-size: 12pt;
+	font-weight: 600;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	outline: none;
+	color: #111;
+	background-color: #ccc;
+	border: none;
+	border-bottom: solid 2px transparent;
+	border-radius: 0px; 
+	transition: border-bottom-color 0.3s ease-out;
   }
+  
+button.login_submit:hover {
+	background-color: #ddd;	
+}
+
+button.login_submit:focus {
+	border-bottom-color: #22ae22;	
+}
+  
+button.login_submit:active {
+	background-color: #22ae22;
+	box-shadow: 0px 0px 0px -2px #00000099 ;
+}
