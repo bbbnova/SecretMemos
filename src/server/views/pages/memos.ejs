@@ -13,7 +13,7 @@
                 <th id="accountTd">Account name</th>
                 <th id="emailTd">Email</th>
                 <th id="urlTd">Url</th>
-                <th id="noteTd">Note</th>
+                <!-- <th id="noteTd">Note</th> -->
                 <th id="controlsTd"></th>
             </tr>
         </thead> 
@@ -94,7 +94,7 @@
         for(let i = 0; i < memos.length; i ++) {
             let memo = memos[i]
 
-            let note = await decrypt(memo.note, pwd)
+            // let note = await decrypt(memo.note, pwd)
             let row = table.tBodies[0].insertRow(i)
             row.dataset.id = memo._id
             let cell0 = row.insertCell(0)
@@ -107,11 +107,38 @@
             cell3.innerHTML = memo.email
             let cell4 = row.insertCell(4)
             cell4.innerHTML = memo.url
+            // let cell5 = row.insertCell(5)
+            // cell5.innerHTML = note
             let cell5 = row.insertCell(5)
-            cell5.innerHTML = note
-            let cell6 = row.insertCell(6)
-            cell6.innerHTML = `<button onclick="initCopyButton(this)" data-id="${memo._id}" class=\"copy\">Copy</button>` +
+            cell5.innerHTML = `<button onclick="initCopyButton(this)" data-id="${memo._id}" class=\"copy\">Copy</button>` +
                 `<button onclick="initEditButton(this)" data-id="${memo._id}" class=\"edit\">Edit</button>`
+            let rowContent = table.tBodies[0].insertRow(i+1)
+            i++;
+            let cell0Content = rowContent.insertCell(0)
+            cell0Content.classList.add('hidden')
+            row.onclick = async () => {
+                let selected = document.querySelectorAll('.selected')
+                // for(let k = 0; k < selected.length; k++) {
+                //     selected[k].classList.remove('selected')
+                // }
+                
+                selected.forEach(s => s.classList.remove('selected'))
+                row.classList.add('selected')
+
+                if(cell0Content.classList.contains('hidden')) {
+                    row.classList.add('selected')
+                    let decryptedNote = await decrypt(memo.note, pwd)
+                    if(decryptedNote.length > 0) {
+                        cell0Content.innerHTML = decryptedNote
+                        cell0Content.classList.remove('hidden')
+                    }
+                    
+                } else {
+                    cell0Content.classList.add('hidden')
+                    cell0Content.innerHTML = ''
+                }
+            }
+            cell0Content.colSpan="6"
         } 
 
         
