@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser'); 
 
 const userRouter = require('./routers/api/userRouter');
 const memosRouter = require('./routers/api/memosRouter');
@@ -19,9 +19,11 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: '300kb' }));
 app.use(express.urlencoded({ extended: false }));
 var expressLayouts = require('express-ejs-layouts');
+
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 
