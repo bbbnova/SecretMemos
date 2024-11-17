@@ -1,5 +1,4 @@
-.tableWrapper {   
-    background-color: beige;
+.tableWrapper {
     overflow-y: scroll;
     position: absolute;
     bottom: 0;

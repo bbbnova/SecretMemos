@@ -1,0 +1,122 @@
+
+
+.icon-addNote {
+    mask: url(/icons/white-address-book-svgrepo-com.svg)
+}
+
+.icon { 
+    background: black;
+    mask-size: cover;
+    width: 32px;
+    height: 32px;
+    display: inline-block; 
+    margin: 4px;
+}
+
+.icon:hover {
+    background: #22ae22;
+}
+
+.icon:active {
+    background: #444;
+}
+
+/* notesBar */
+.notesBar ul {
+  list-style-type: none;
+  /*  margin: 5px; */
+  padding: 0;
+  overflow: hidden;
+  background-color: #22ae2250;
+}
+ 
+.notesBar li {
+  float: left;
+}
+
+.notesBar li.float-right {
+  float: right;
+}
+
+/* .notesBar li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 4px;
+  text-decoration: none;
+} */
+
+.notesBar input[type=search] { 
+    margin: 4px;
+	font-size: 12pt;
+	vertical-align: baseline;
+	font-weight: 400;
+	line-height: 1.29;
+	letter-spacing: .16px;
+	border-radius: 5px;	
+	outline: none;
+	/* height: 30px; */
+	border: 1px solid #ccc; 
+	background-color: #fbfbfb;
+	padding: 4px;
+	color: #111; 
+}
+
+/* .notesBar li a:hover {
+    background-color: #333;
+} */
+
+/* end notesBar */
+
+.container {
+    overflow-y: scroll;
+    position: absolute;
+    bottom: 0;
+    top: 90px;
+    left: 0;
+    right: 0;
+    padding: 15px;
+}
+
+.note {
+    display: inline-block;
+    margin: 0 0 5px 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    max-width: 250px;   
+    height: 100px;
+    overflow: hidden;
+    background-color: #33333310;
+    box-shadow: 0 0 4px -2px #00000060;
+    /* transition: box-shadow 0.3s ease-in; */
+}
+
+.note:hover {
+    box-shadow: 0 0 8px -2px #00000060;
+}
+
+.note:active {
+    box-shadow: 0 0 0px -2px #00000060;
+}
+
+.note h4, p {
+    color: #333;
+    font-style: normal;
+    font-size: 14pt;
+    text-decoration: none;
+    text-decoration-line: none;
+}
+
+a:link { 
+    text-decoration: none; 
+  } 
+  a:visited { 
+    text-decoration: none; 
+  } 
+  a:hover { 
+    text-decoration: none; 
+  } 
+  a:active { 
+    text-decoration: none; 
+  }

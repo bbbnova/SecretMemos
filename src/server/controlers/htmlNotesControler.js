@@ -10,7 +10,7 @@ const getNotes = async (req, res) => {
         locals: {
             title: 'SecretNotes', 
             nav: 'notes',
-            css: '/css/home.css', 
+            css: '/css/notes.css', 
             name: req.user.name,
             email: req.user.email,
             notes: notes,
