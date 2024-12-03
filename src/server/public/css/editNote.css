@@ -1,0 +1,10 @@
+.container {
+    position: relative;
+    margin: auto;
+    width: 500px;
+}
+
+.select-editable {position:relative; width:120px; }
+.select-editable > * {position:absolute; top:0; left:0; box-sizing:border-box; outline:none;}
+.select-editable select {width:100%;}
+.select-editable input {width:calc(100% - 20px); margin:1px; border:none; text-overflow:ellipsis;}

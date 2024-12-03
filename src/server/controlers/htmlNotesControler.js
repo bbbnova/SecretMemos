@@ -43,7 +43,7 @@ const getEditNote = async (req, res) => {
             locals: {
                 title: 'SecretNotes', 
                 nav: 'notes',
-                css: '/css/home.css', 
+                css: '/css/editNote.css', 
                 name: req.user.name,
                 email: req.user.email,
                 note: note,
