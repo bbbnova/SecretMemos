@@ -1,6 +1,6 @@
 .container {
     position: relative;
-    margin: auto;
+    margin: 15px auto;
     width: 500px;
 }
 
@@ -8,3 +8,63 @@
 .select-editable > * {position:absolute; top:0; left:0; box-sizing:border-box; outline:none;}
 .select-editable select {width:100%;}
 .select-editable input {width:calc(100% - 20px); margin:1px; border:none; text-overflow:ellipsis;}
+
+input {
+    font-size: 12pt;
+    display: block;
+    margin: 5px 0 5px 0;
+    padding: 2px 5px;
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-bottom: 2px solid;
+	border-bottom-color: transparent; 
+}
+
+#title {
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+#number {
+    width: 50px;
+}
+
+#pageName {
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+#btnAddNewPage { 
+    color: #22ae22;
+}
+
+input:focus { 
+    outline: none; 	
+    border-bottom: 2px solid;
+	border-bottom-color: #22ae22; 
+}
+
+.pages button {
+    margin: 2px 2px 2px 0;  
+    padding: 1px 2px;
+    outline: none;
+    border: solid 1px #aaa;
+}
+
+.pages button:hover {
+    background-color: #ccc;
+}
+
+.pages button:active {
+    background-color: #bbb;
+}
+
+.pages button.selected {
+    background-color: #22ae22;
+}
+
+.pageContent {
+    margin: 5px 0 5px 0;
+}

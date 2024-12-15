@@ -1,5 +1,5 @@
 import {
-	InlineEditor,
+	ClassicEditor,
 	AccessibilityHelp,
 	Alignment,
 	Autoformat,
@@ -264,4 +264,4 @@ const editorConfig = {
 	}
 };
 
-InlineEditor.create(document.querySelector('#editor'), editorConfig);
+ClassicEditor.create(document.querySelector('#editor'), editorConfig);

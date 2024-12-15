@@ -1,9 +1,7 @@
 
 <form id="form" class="container"> 
     <input name="title" id="title" type="text" value="<%=locals.note.title%>"/>
-    <br/>
     <input name="description" id="description" placeholder="description" type="text" value="<%-locals.note.description%>"/>
-    <br/>
     <input name="number" id="number" type="number" value="<%-locals.note.number%>"/>
 
     <div class="pages">
@@ -13,23 +11,19 @@
         <% } %>
         <button type="button" id="btnAddNewPage" onclick="addNewPage('<%- i %>')">add page</button>
     </div>
-    <br/>
-    <br/>
-    <br/>
+
+    <input name="pageName" id="pageName" placeholder="page name" type="text"/>
+
     <div class="pageContent">
-
         <!-- <textarea id="pageText" cols="50" rows="50">
-
         </textarea> -->
-
         <div class="main-container">
             <div class="editor-container editor-container_inline-editor" id="editor-container">
                 <div class="editor-container__editor">
                     <div id="editor"></div>
                 </div>
             </div>
-        </div>
-        
+        </div>        
     </div>
 
     <button id="btnSave" type="button" onclick="saveData()">Save</button>
@@ -91,6 +85,11 @@
             currentPage = await response.json()
             editor.setData(await decrypt(currentPage.content, pwd));
             document.querySelector(".pageContent").classList.remove("hidden")
+            document.querySelectorAll(".pages .selected").forEach(element => {
+                element.classList.remove("selected")
+            });
+            button.classList.add("selected")
+            document.querySelector("#pageName").value = currentPage.title
         } 
         else {
             console.log('can not fing page')
@@ -147,6 +146,7 @@
         let data = editor.getData();
         data = await encrypt(data, pwd)
         
+        let pageTitle = document.querySelector("#pageName").value;
         //update page
         //update note
         let response = await fetch("/api/notes/update", {
@@ -157,7 +157,8 @@
                 number: form.number.value,
                 description: form.description.value,
                 page_id: currentPage._id,
-                page_content: data
+                page_content: data,
+                page_title: pageTitle
             }),
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
@@ -168,6 +169,8 @@
             // window.location.href = '/notes'
             //window.location.reload()
             //saved message to user
+            currentPage.title = pageTitle
+            document.querySelector(".pages .selected").innerHTML = pageTitle
         }
     }
 

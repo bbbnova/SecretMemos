@@ -45,7 +45,8 @@ const updateNote = async (req, res) => {
         {
             let pageResult = await Page.updateOne({_id: req.body.page_id, user: req.user._id}, {
                 $set: {
-                    content: req.body.page_content
+                    content: req.body.page_content,
+                    title: req.body.page_title
                 }
             })
 
