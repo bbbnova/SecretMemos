@@ -21,8 +21,13 @@ const getUserNotes = async (req, res) => {
 
 const deleteNote = async (req, res) => {
     try {
-        let note = await Note.deleteOne({user: req.user._id, _id: req.body._id})
-        res.status(200).json(note)
+        // console.log('user: ' + req.user._id)
+        // console.log('note: ' + req.body._id)
+        let pagesResult = await Page.deleteMany({user: req.user._id, note: req.body._id})
+        // console.log(pagesResult)
+        let result = await Note.deleteOne({user: req.user._id, _id: req.body._id})
+        // console.log(result)
+        res.status(200).json(result)
     } catch(err) {
         console.log(err)
         res.sendStatus(402)

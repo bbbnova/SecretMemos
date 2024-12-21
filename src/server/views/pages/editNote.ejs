@@ -28,6 +28,7 @@
 
     <button id="btnSave" type="button" onclick="saveData()">Save</button>
     <button id="btnDelete" type="button" onclick="deletePage()">Delete</button>
+    <button id="btnDeleteNote" type="button" onclick="deleteNote()">Delete entire note</button>
 </form>
 
 <script type="importmap">
@@ -188,6 +189,23 @@
             // window.location.reload()
             let btnPage = document.querySelector('.page[data-page="'+ currentPage._id +'"]').remove() 
             await loadFirstPage()
+        }
+    }
+
+    async function deleteNote() {
+        let note = JSON.parse('<%- JSON.stringify(locals.note) %>')
+        
+        let response = await fetch("/api/notes/delete", {
+                method: "POST",
+                body: JSON.stringify({
+                    _id: note._id
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+        if(response.status === 200) {
+            window.location.href = '/notes'
         }
     }
 
