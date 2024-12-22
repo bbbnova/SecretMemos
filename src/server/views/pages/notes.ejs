@@ -7,16 +7,32 @@
             </a>
         </li>
         <li class="float-right">
-            <input type="search" name="search" id="search" placeholder="search"/>
+            <input type="search" name="search" id="search" placeholder="search" oninput="onSearch(this)"/>
         </li>
     </ul>
 </nav>
 
 <div class="container">
     <% for(let i = 0; i < locals.notes.length; i ++) { %>
-        <a class="note" href="/notes/note?id=<%-locals.notes[i]._id%>">
+        <a class="note" href="/notes/note?id=<%-locals.notes[i]._id%>" data-title="<%-locals.notes[i].title%>" data-description="<%-locals.notes[i].description%>">
             <h4><%-locals.notes[i].title%></h4>
             <p><%-locals.notes[i].description%></p>
         </a>
     <% } %>
 </div>
+
+<script>
+    function onSearch(element) {
+        let val = element.value
+        let noteElements = document.querySelectorAll("a.note") 
+
+        noteElements.forEach(n => {            
+            if(n.dataset.title.toLowerCase().includes(val.toLowerCase()) || n.dataset.description.toLowerCase().includes(val.toLowerCase())) {
+                n.classList.remove("hidden")
+            }
+            else {
+                n.classList.add("hidden")
+            }
+        });
+    }
+</script>
