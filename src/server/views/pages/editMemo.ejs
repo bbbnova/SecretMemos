@@ -44,7 +44,7 @@
         </div>
 
         <input type="button" value="Save" name="submit" id="submit" onclick="beforeSubmit()"/>
-        <input type="button" value="Back" name="back" id="back" onclick="cancelEdit()"/>
+        <input type="button" value="Memos" name="back" id="Memos" onclick="goToMemos()"/>
         <input type="button" value="Delete" name="delete" id="delete" onclick="deleteMemo('<%-locals.memo._id%>')"/>
     </form>
 </div>
@@ -61,13 +61,12 @@
                 }
             })
         if(response.status === 200) {
-            window.location.href = '/'
+            window.location.href = '/memos'
         }
     }
 
-    function cancelEdit() { 
-        // window.location.replace('/')
-        history.back()
+    function goToMemos() { 
+        window.location.href = '/memos'
     }
 
     async function beforeSubmit() {

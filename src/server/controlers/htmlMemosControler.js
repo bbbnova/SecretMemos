@@ -73,7 +73,7 @@ const updateMemo = async (req, res) => {
     }}) 
 
     if(memo) {
-        res.redirect('/')
+        res.redirect('/memos#' + req.body._id)
     } else {
         console.log('error')
     }
@@ -92,7 +92,7 @@ const addMemo = async (req, res) => {
             user: req.user._id
         })
         if(memo) { 
-            res.redirect('/')
+            res.redirect('/memos#' + memo._id)
         }
     } catch(err) {
         console.log(err)

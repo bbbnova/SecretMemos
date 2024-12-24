@@ -1,3 +1,60 @@
+
+.icon-addMemos {
+    mask: url(/icons/key-svgrepo-com.svg)
+}
+
+.icon { 
+    background: black;
+    mask-size: cover;
+    width: 32px;
+    height: 32px;
+    display: inline-block; 
+    margin: 4px;
+}
+
+.icon:hover {
+    background: #22ae22;
+}
+
+.icon:active {
+    background: #444;
+}
+
+/* memosBar */
+.memosBar ul {
+  list-style-type: none;
+  padding: 0;
+  overflow: hidden;
+  background-color: #22ae2250;
+}
+ 
+.memosBar li {
+  float: left;
+}
+
+.memosBar li.float-right {
+  float: right;
+}
+
+.memosBar input[type=search] { 
+    margin: 4px;
+	font-size: 12pt;
+	vertical-align: baseline;
+	font-weight: 400;
+	line-height: 1.29;
+	letter-spacing: .16px;
+	border-radius: 5px;	
+	outline: none;
+	/* height: 30px; */
+	border: 1px solid #ccc; 
+	background-color: #fbfbfb;
+	padding: 4px;
+	color: #111; 
+}
+
+/* end MemosBar */
+
+
 .tableWrapper {
     overflow-y: scroll;
     position: absolute;

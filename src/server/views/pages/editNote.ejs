@@ -29,6 +29,7 @@
     <button id="btnSave" type="button" onclick="saveData()">Save</button>
     <button id="btnDelete" type="button" onclick="deletePage()">Delete</button>
     <button id="btnDeleteNote" type="button" onclick="deleteNote()">Delete entire note</button>
+    <button id="btnUpToNotes" type="button" onclick="goToNotes()">Memos</button>
 </form>
 
 <script type="importmap">
@@ -225,4 +226,8 @@
 
     let note = JSON.parse('<%- JSON.stringify(locals.note) %>')
     loadFirstPage()
+
+    function goToNotes() {
+        window.location = '/notes'
+    }
 </script>

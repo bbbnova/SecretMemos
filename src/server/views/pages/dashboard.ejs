@@ -4,10 +4,16 @@
 
         <h2>Dashboard</h2>
         <label>name</label>
-        <h3><%=locals.name%></h3>
+        <p><%=locals.name%></p>
         <br/>
         <label>email</label>
-        <h3><%=locals.email%></h3>
+        <p><%=locals.email%></p>
+        <br/>
+        <label>notes</label>
+        <p id="notes"></p>
+        <br/>
+        <label>memos</label>
+        <p id="memos"></p>
 
     <% } else { %>
 
@@ -15,3 +21,59 @@
 
     <% } %>
 </div>
+
+<script>
+    // async function getUserSalt() {
+    //     try {
+    //         let response = await fetch("/api/user/getSalt", {
+    //             method: "GET" 
+    //         })
+            
+    //         if(response.status === 200) {
+    //             let {salt} = await response.json();
+    //             return salt;
+    //         } else {
+    //             console.log('error geting user salt')
+    //         }
+    //     } catch(err) {
+    //         console.error(err)
+    //     }
+    // }
+
+    const getUserNotesCount = async () => {
+        try {
+            let responseNotes = await fetch("/api/notes/getCount", {
+                method: "GET" 
+            })
+            
+            if(responseNotes.status === 200) {
+                let notesCount = await responseNotes.json();
+                document.querySelector('#notes').innerHTML = notesCount
+            } else {
+                console.log('error geting notes count')
+            }
+        } catch(err) {
+            console.error(err)
+        }
+    }
+
+    const getUserMemosCount = async () => { 
+        try {
+            let responseMemos = await fetch("/api/memos/getCount", {
+                method: "GET" 
+            })
+            
+            if(responseMemos.status === 200) {
+                let memosCount = await responseMemos.json();
+                document.querySelector('#memos').innerHTML = memosCount
+            } else {
+                console.log('error geting memos count')
+            }
+        } catch(err) {
+            console.error(err)
+        }
+    }
+
+    getUserNotesCount()
+    getUserMemosCount()
+</script>

@@ -1,7 +1,7 @@
 
 
 .icon-addNote {
-    mask: url(/icons/white-address-book-svgrepo-com.svg)
+    mask: url(/icons/add-note-svgrepo-com.svg)
 }
 
 .icon { 
@@ -24,7 +24,6 @@
 /* notesBar */
 .notesBar ul {
   list-style-type: none;
-  /*  margin: 5px; */
   padding: 0;
   overflow: hidden;
   background-color: #22ae2250;
@@ -37,14 +36,6 @@
 .notesBar li.float-right {
   float: right;
 }
-
-/* .notesBar li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 4px;
-  text-decoration: none;
-} */
 
 .notesBar input[type=search] { 
     margin: 4px;
@@ -62,9 +53,6 @@
 	color: #111; 
 }
 
-/* .notesBar li a:hover {
-    background-color: #333;
-} */
 
 /* end notesBar */
 

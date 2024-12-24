@@ -21,6 +21,22 @@ const getUserMemos = async (req, res) => {
     }
 }
 
+const getUserMemosCount = async (req, res) => {
+    try {
+        let memos = await Memo.countDocuments({user: req.user._id})
+        if(memos) {
+            res.status(200).json(memos) 
+        }
+        else {
+            console.log(err)
+            res.sendStatus(500)
+        }
+    } catch(err) {
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
 const getMemoPasswordById = async (req, res) => {
     try {
         let memo = await Memo.findOne({user: req.user._id, _id: req.body._id})
@@ -37,8 +53,8 @@ const getMemoPasswordById = async (req, res) => {
 
 const deleteMemo = async (req, res) => {
     try {
-        let memo = await Memo.deleteOne({user: req.user._id, _id: req.body._id})
-        res.status(200).json(memo)
+        let result = await Memo.deleteOne({user: req.user._id, _id: req.body._id})
+        res.status(200).json(result)
     } catch(err) {
         console.log(err)
         res.sendStatus(500)
@@ -83,4 +99,4 @@ const addMemo = async (req, res) => {
     }
 }
 
-module.exports = { getUserMemos, getMemoPasswordById , deleteMemo, updateMemo, addMemo};
+module.exports = { getUserMemos, getUserMemosCount, getMemoPasswordById , deleteMemo, updateMemo, addMemo};

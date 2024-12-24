@@ -1,8 +1,15 @@
-<h4>Passwords: </h4>
-<label for='search'>Search</label>
-<input type="search" name="search" id="search"/>
-<br/>
-<button id="btnAddNew" onclick="window.location.href='/memos/addMemo'">Add</button>
+<nav class="memosBar">
+    <ul>
+        <li>
+            <a href="/memos/add" class="icon icon-addMemos">
+                <!-- <img src="/icons/add-note-svgrepo-com.svg" width="32" height="32"/> -->
+            </a>
+        </li>
+        <li class="float-right">
+            <input type="search" name="search" id="search" placeholder="search" oninput="onSearch(this)"/>
+        </li>
+    </ul>
+</nav>
 
 <div class="tableWrapper">
     <table id="memosTable">   
@@ -38,7 +45,11 @@
             method: "GET" 
         })
 
-        return response.json();
+        if(response.status === 200) {
+            return await response.json(); 
+        } else {
+            console.log('error loading memos')
+        }
     }
 
     async function getMemoPasswordById(id) {
@@ -84,7 +95,7 @@
         window.location.href = '/memos/editMemo?id=' + button.dataset.id
     }
 
-    window.onload = async (event) => {        
+    window.onload = async (event) => {      
         let memos = await getMemos()
         let salt = await getUserSalt()
         let encryptedPwd = sessionStorage.getItem('pwd')
@@ -94,9 +105,8 @@
         for(let i = 0; i < memos.length; i ++) {
             let memo = memos[i]
 
-            // let note = await decrypt(memo.note, pwd)
-            let row = table.tBodies[0].insertRow(i)
-            row.dataset.id = memo._id
+            let row = table.tBodies[0].insertRow()
+            row.id = row.dataset.id = memo._id
             let cell0 = row.insertCell(0)
             cell0.innerHTML = memo.category
             let cell1 = row.insertCell(1)
@@ -107,20 +117,16 @@
             cell3.innerHTML = memo.email
             let cell4 = row.insertCell(4)
             cell4.innerHTML = memo.url
-            // let cell5 = row.insertCell(5)
-            // cell5.innerHTML = note
+            
             let cell5 = row.insertCell(5)
             cell5.innerHTML = `<button onclick="initCopyButton(this)" data-id="${memo._id}" class=\"copy\">Copy</button>` +
                 `<button onclick="initEditButton(this)" data-id="${memo._id}" class=\"edit\">Edit</button>`
-            let rowContent = table.tBodies[0].insertRow(i+1)
-            i++;
+            let rowContent = table.tBodies[0].insertRow()
+            
             let cell0Content = rowContent.insertCell(0)
             cell0Content.classList.add('hidden')
             row.onclick = async () => {
                 let selected = document.querySelectorAll('.selected')
-                // for(let k = 0; k < selected.length; k++) {
-                //     selected[k].classList.remove('selected')
-                // }
                 
                 selected.forEach(s => s.classList.remove('selected'))
                 row.classList.add('selected')
@@ -141,6 +147,24 @@
             cell0Content.colSpan="6"
         } 
 
+        if(window.location.href.includes('#')) {
+            var searchId = window.location.href.split('#')[1]
+            let element = document.getElementById(searchId)
+            if(element) {
+                console.log(element)
+                element.scrollIntoView()
+            }
+        }
+
+        // var searchId = window.location.href.split('#')[1]
+        // console.log(searchId)
+        // let element = document.querySelector('#'+searchId)
+        // console.log(element)
+        // if(elеment) {
+        //     element.scrollInToView()
+        // }
+
+        // document.querySelector("#")
         
 
         // document.querySelectorAll('button.copy').forEach((button) => {

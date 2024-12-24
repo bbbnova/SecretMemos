@@ -8,6 +8,7 @@ app.use(express.json());
 
 
 router.get('/get', authorization.authorizeUser, memosControler.getUserMemos)
+router.get('/getCount', authorization.authorizeUser, memosControler.getUserMemosCount)
 router.post('/getPasswordById', authorization.authorizeUser, memosControler.getMemoPasswordById)
 router.post('/delete', authorization.authorizeUser, memosControler.deleteMemo)
 router.post('/update', authorization.authorizeUser, memosControler.updateMemo)

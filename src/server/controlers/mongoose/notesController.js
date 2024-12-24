@@ -11,13 +11,27 @@ const getUserNotes = async (req, res) => {
         let notes = await Note.find({user: req.user._id})
     
         if(notes) {
-            res.status(200).json(memos) 
+            res.status(200).json(notes) 
         } 
     } catch(err) {
         console.log(err)
         res.sendStatus(402)
     }
-}
+} 
+
+const getUserNotesCount = async (req, res) => {
+    
+    try {
+        let notes = await Note.countDocuments({user: req.user._id})
+    
+        if(notes) {
+            res.status(200).json(notes) 
+        } 
+    } catch(err) {
+        console.log(err)
+        res.sendStatus(402)
+    }
+} 
 
 const deleteNote = async (req, res) => {
     try {
@@ -92,4 +106,4 @@ const addNote = async (req, res) => {
     }
 }
 
-module.exports = { getUserNotes, deleteNote, updateNote, addNote }
+module.exports = { getUserNotes, getUserNotesCount, deleteNote, updateNote, addNote }
