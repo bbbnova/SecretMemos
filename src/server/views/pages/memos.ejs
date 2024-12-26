@@ -40,6 +40,22 @@
         window.location.replace('/login')
     }
 
+    async function getUserSalt() {
+        let response = await fetch("http://localhost:3000/api/user/getSalt", {
+            method: "GET"
+        })
+        
+        let {salt} = await response.json();
+        return salt;
+    }
+
+    async function decryptUserPasswordFromStorage() {
+        let salt = await getUserSalt()
+        let encryptedPwd = sessionStorage.getItem('pwd')
+        let pwd = await decrypt(encryptedPwd, salt);
+        return pwd;
+    }
+
     async function getMemos() {
         let response = await fetch("http://localhost:3000/api/memos/get", {
             method: "GET" 
@@ -67,24 +83,12 @@
         return password
     }
 
-    async function getUserSalt() {
-        let response = await fetch("http://localhost:3000/api/user/getSalt", {
-            method: "GET"
-        })
-        
-        let {salt} = await response.json();
-        return salt;
-    }
-
     async function initCopyButton(button) { 
-            let password = await getMemoPasswordById(button.dataset.id)
-                
-            let salt = await getUserSalt()
-            let encryptedPwd = sessionStorage.getItem('pwd')
-            let pwd = await decrypt(encryptedPwd, salt);
+            let memosPass = await getMemoPasswordById(button.dataset.id)
+            let pwd = await decryptUserPasswordFromStorage()
 
             try {
-                await navigator.clipboard.writeText(await decrypt(password, pwd));
+                await navigator.clipboard.writeText(await decrypt(memosPass, pwd));
                 alert('Password copied to clipboard')
             } catch (err) {
                 alert(err.message)
@@ -97,9 +101,7 @@
 
     window.onload = async (event) => {      
         let memos = await getMemos()
-        let salt = await getUserSalt()
-        let encryptedPwd = sessionStorage.getItem('pwd')
-        let pwd = await decrypt(encryptedPwd, salt);
+        let pwd = await decryptUserPasswordFromStorage()
         
         let table = document.querySelector("#memosTable")
         for(let i = 0; i < memos.length; i ++) {
@@ -119,32 +121,55 @@
             cell4.innerHTML = memo.url
             
             let cell5 = row.insertCell(5)
+
             cell5.innerHTML = `<button onclick="initCopyButton(this)" data-id="${memo._id}" class=\"copy\">Copy</button>` +
                 `<button onclick="initEditButton(this)" data-id="${memo._id}" class=\"edit\">Edit</button>`
-            let rowContent = table.tBodies[0].insertRow()
-            
-            let cell0Content = rowContent.insertCell(0)
-            cell0Content.classList.add('hidden')
-            row.onclick = async () => {
-                let selected = document.querySelectorAll('.selected')
-                
-                selected.forEach(s => s.classList.remove('selected'))
-                row.classList.add('selected')
 
+            let expandLink = document.createElement("a")
+            expandLink.classList.add("expandButton")
+            expandLink.innerHTML = "+"
+            expandLink.href = "#"
+            expandLink.onclick = 
+            async (event) => {
+                event.stopPropagation()
                 if(cell0Content.classList.contains('hidden')) {
-                    row.classList.add('selected')
+                    // row.classList.add('selected')
                     let decryptedNote = await decrypt(memo.note, pwd)
-                    if(decryptedNote.length > 0) {
-                        cell0Content.innerHTML = decryptedNote
+                    let decryptedNoteElement = document.createElement('p')
+                    decryptedNoteElement.innerHTML = decryptedNote
+                    // if(decryptedNote.length > 0) {
+                        cell0Content.appendChild(decryptedNoteElement)
                         cell0Content.classList.remove('hidden')
-                    }
+                        expandLink.innerHTML = "-"
+                        row.classList.add("header")
+                    // }
                     
                 } else {
                     cell0Content.classList.add('hidden')
                     cell0Content.innerHTML = ''
+                    expandLink.innerHTML = "+"
+                    row.classList.remove("header")
                 }
             }
+
+            cell5.appendChild(expandLink)
+            
+            
+            let rowContent = table.tBodies[0].insertRow()
+            
+            let cell0Content = rowContent.insertCell(0)
+            cell0Content.classList.add('hidden')
+            rowContent.classList.add('content')
+            row.onclick = rowContent.onclick = async () => {
+                let selected = document.querySelectorAll('.selected')
+                
+                selected.forEach(s => s.classList.remove('selected'))
+                row.classList.add('selected')
+                rowContent.classList.add('selected')
+            }
             cell0Content.colSpan="6"
+
+            
         } 
 
         if(window.location.href.includes('#')) {
