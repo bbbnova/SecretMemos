@@ -1,8 +1,24 @@
 .container {
-    max-width: 300px;
+    min-width: 200px;
+    max-width: 500px;
     margin: 20px auto;
+} 
+
+h2 {
+    margin: 15px 0 35px 0;
+    text-indent: 0px;
+    font-size: 2em;
 }
 
-h3 {
-   text-align: center; 
+label {
+    text-indent: 0px;
+    font-weight: bold; 
+    display: block;
+    margin-top: 15px;
+    border-bottom: 1px #ccc solid;
+}
+
+span {
+    line-height: 1.2em;
+    font-size: 1.2em;
 }
