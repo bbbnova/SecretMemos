@@ -46,7 +46,7 @@ app.use('', (req, res) => {
     res.status(404).render('pages/404', {layout: 'layouts/main'})
 });
 
-mongoose.connect(process.env.DATA_CONNECTION_STRING).then(() => {
+mongoose.connect(process.env.LOCAL_DATA_CONNECTION_STRING).then(() => {
     console.log('Database connected.');
     app.listen(PORT, () => {
         console.log(`Server listening on port: ${PORT}`)
