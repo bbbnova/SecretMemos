@@ -1,0 +1,26 @@
+services:
+    #MongoDB service
+    mongo_db:
+        container_name: mongodb_container
+        image: mongo:8.0.4
+        restart: always
+        volumes: 
+            - mongo_db:/data/db
+
+    #NotePass
+    notepass:
+        build: .
+        ports:
+            - 4000:3000
+        environment:
+            PORT: 3000
+            DATA_CONNECTION_STRING: mongodb+srv://admin:9Im9LDh8bxzKtJWR@clusternotepass.x1pg70k.mongodb.net/?retryWrites=true&w=majority&appName=ClusterNotePass
+            LOCAL_DATA_CONNECTION_STRING: mongodb://mongo_db:27017/notepass
+            SECRET_KEY: c7d2def074951b7641c1fb5d0ab9b7e4
+            IV: fb518888401a9a74
+            NODE_ENV: development
+        depends_on:
+            - mongo_db
+
+volumes:
+    mongo_db: {}

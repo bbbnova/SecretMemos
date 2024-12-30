@@ -41,7 +41,7 @@
     }
 
     async function getUserSalt() {
-        let response = await fetch("http://localhost:3000/api/user/getSalt", {
+        let response = await fetch("/api/user/getSalt", {
             method: "GET"
         })
         
@@ -57,7 +57,7 @@
     }
 
     async function getMemos() {
-        let response = await fetch("http://localhost:3000/api/memos/get", {
+        let response = await fetch("/api/memos/get", {
             method: "GET" 
         })
 
@@ -69,7 +69,7 @@
     }
 
     async function getMemoPasswordById(id) {
-        let response = await fetch("http://localhost:3000/api/memos/getPasswordById", {
+        let response = await fetch("/api/memos/getPasswordById", {
             method: "POST",
             body: JSON.stringify({
                 _id: id
@@ -293,7 +293,7 @@
 
             console.log('send from browsed data: ' + code)
 
-            fetch("http://localhost:3000/api/test/data", {
+            fetch("/api/test/data", {
                 method: "POST",
                 body: JSON.stringify({
                     data: code

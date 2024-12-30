@@ -31,7 +31,7 @@
         let email = document.getElementById('email').value
         let password = document.getElementById('password').value
 
-        let response = await fetch("http://localhost:3000/api/user/signup", {
+        let response = await fetch("/api/user/signup", {
             method: "POST",
             body: JSON.stringify({
                 name: name,

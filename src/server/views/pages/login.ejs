@@ -39,7 +39,7 @@
 
         // postData('/login', {email: email, passwordHash: passwordHash}, 'post');
         
-        let response = await fetch("http://localhost:3000/api/user/login", {
+        let response = await fetch("/api/user/login", {
             method: "POST",
             // redirect: "follow",
             body: JSON.stringify({
@@ -64,7 +64,7 @@
 
         
 
-        // let response = await fetch("http://localhost:3000/api/user/login", {
+        // let response = await fetch("/api/user/login", {
         //     method: "POST",
         //     redirect: "follow",
         //     body: JSON.stringify({
