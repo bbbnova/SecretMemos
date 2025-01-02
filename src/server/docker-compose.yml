@@ -1,0 +1,38 @@
+secrets:
+    secret_key:
+        file: ./secret_key.txt
+    iv:
+        file: ./iv.txt
+
+services:
+    #MongoDB service
+    mongo_db:
+        container_name: mongodb_container
+        image: mongo:8.0.4
+        restart: always
+        volumes: 
+            - mongo_db:/data/db
+
+    #NotePass
+    notepass:
+        secrets:
+            - secret_key
+            - iv
+        build: .
+        restart: always
+        ports:
+            - 4000:3000
+        
+        environment:
+            PORT: 3000
+            LOCAL_DATA_CONNECTION_STRING: mongodb://mongo_db:27017/notepass
+            SECRET_KEY: /run/secrets/secret_key
+            IV: /run/secrets/iv
+            NODE_ENV: development
+        depends_on:
+            - mongo_db        
+
+volumes:
+    mongo_db:
+        driver: local
+
