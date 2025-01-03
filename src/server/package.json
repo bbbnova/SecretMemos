@@ -4,8 +4,8 @@
   "description": "Secret memos and password container",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "devStart": "nodemon server.js"
+    "node": "node server.js",
+    "start": "nodemon server.js"
   },
   "@nodemonConfig": {
     "events": {

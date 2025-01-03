@@ -6,3 +6,5 @@ docker-compose.yml
 .gitignore
 .env
 requests.rest
+secret_key.txt
+iv.txt

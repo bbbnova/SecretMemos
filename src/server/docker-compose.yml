@@ -32,8 +32,8 @@ volumes:
 
 secrets:
     secret_key:
-        file: ./secret_key.txt
+        file: ./secret_key.txt  #16 long hex
         # external: true
     iv:
-        file: ./iv.txt
+        file: ./iv.txt          #32 long hex
         # external: true

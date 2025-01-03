@@ -7,7 +7,7 @@ const authorizeUser = async (req, res, next) => {
     if(!req.cookies['resData']) {
         res.redirect('/login')
         // res.render('pages/login', { locals: { title: 'Secret Notes', css: '/css/login.css'}, layout: 'layouts/main'});
-        console.log('no token from ip: ' + req.ip)
+        // console.log('no token from ip: ' + req.ip)
         return;
     } else {
         let resData = JSON.parse(req.cookies['resData'])
@@ -42,7 +42,7 @@ const authorizeUser = async (req, res, next) => {
             const currentTime = new Date();
             const allowedTime = Date.parse(token.exp)
             if(currentTime > allowedTime) {
-                console.log('Cookie expired from ip: ' + req.ip)
+                // console.log('Cookie expired from ip: ' + req.ip)
                 res.redirect('/login')
                 // res.render('pages/login', { locals: { title: 'Secret Notes', css: '/css/login.css'}, layout: 'layouts/main'});
                 return;
