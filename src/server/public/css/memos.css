@@ -149,3 +149,8 @@ tr button {
     text-align: center;
     vertical-align: middle;
 }
+
+.hidden {
+    display: none;
+    overflow: hidden;
+  }

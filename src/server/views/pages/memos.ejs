@@ -108,7 +108,15 @@
             let memo = memos[i]
 
             let row = table.tBodies[0].insertRow()
+            row.classList.add("memo")
+
             row.id = row.dataset.id = memo._id
+            row.dataset.category = memo.category
+            row.dataset.applicationName = memo.applicationName
+            row.dataset.accountName = memo.accountName
+            row.dataset.email = memo.email
+            row.dataset.url = memo.url
+
             let cell0 = row.insertCell(0)
             cell0.innerHTML = memo.category
             let cell1 = row.insertCell(1)
@@ -176,7 +184,7 @@
             var searchId = window.location.href.split('#')[1]
             let element = document.getElementById(searchId)
             if(element) {
-                console.log(element)
+                // console.log(element)
                 element.scrollIntoView()
             }
         }
@@ -210,7 +218,24 @@
         // })
     } 
 
-    
+    function onSearch(element) {
+        let val = element.value
+        let memoElements = document.querySelectorAll("tr.memo") 
+
+        memoElements.forEach(n => {            
+            if(n.dataset.category.toLowerCase().includes(val.toLowerCase()) || 
+                n.dataset.accountName.toLowerCase().includes(val.toLowerCase()) ||
+                n.dataset.applicationName.toLowerCase().includes(val.toLowerCase()) ||
+                n.dataset.email.toLowerCase().includes(val.toLowerCase()) ||
+                n.dataset.url.toLowerCase().includes(val.toLowerCase()) ) 
+            {
+                n.classList.remove("hidden")
+            }
+            else {
+                n.classList.add("hidden")
+            }
+        });
+    }
 
     
 
