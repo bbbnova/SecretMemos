@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit')
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser'); 
 
@@ -22,15 +23,21 @@ app.use(cookieParser());
 app.use(express.json({ limit: '300kb' }));
 app.use(express.urlencoded({ extended: false }));
 var expressLayouts = require('express-ejs-layouts');
-
-
-
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(expressLayouts);
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
+
+const limiter = rateLimit({
+	windowMs: 20 * 1000,
+	limit: 20,
+	standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+})
+
+// Apply the rate limiting middleware to all requests.
+app.use(limiter)
 
 
 app.use('/api/user', userRouter); 
