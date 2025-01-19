@@ -10,7 +10,7 @@ const authorizeUser = async (req, res, next) => {
         // console.log('no token from ip: ' + req.ip)
         return;
     } else {
-        console.log(req.ip)
+        // console.log(req.ip)
         let resData = JSON.parse(req.cookies['resData'])
         let result
         try{
