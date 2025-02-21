@@ -13,5 +13,5 @@ copy to docker container
 docker cp ./notepassdb mongodb_container:/
 
 in container exec
-docker container exec -it 0d /bin/sh
-mongorestore --db=notepass --archive=notepassdb
+docker container exec -it CONTAINERNAME /bin/sh
+mongorestore --db=notepass --archive=notepassdb 
