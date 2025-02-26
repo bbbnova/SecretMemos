@@ -49,6 +49,10 @@ app.use('/', htmlHomeRouter);
 app.use('/memos', htmlMemosRouter);
 app.use('/notes', htmlNotesRouter);
 
+app.use('/429', (req, res) => {
+    res.status(404).render('pages/429', {layout: 'layouts/main'})
+});
+
 app.use('', (req, res) => {
     res.status(404).render('pages/404', {layout: 'layouts/main'})
 });

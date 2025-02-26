@@ -55,8 +55,11 @@
             if(response.status === 200) {
                 let {salt} = await response.json();
                 return salt;
+            } else if (response.status == 429){
+                // send user to "too much requests sent to server" page
+                window.location.href = '/429'
             } else {
-                console.log('error geting user salt')
+                console.log('Error geting user salt.')
             }
         } catch(err) {
             console.error(err)
@@ -92,7 +95,10 @@
             });
             button.classList.add("selected")
             document.querySelector("#pageName").value = currentPage.title
-        } 
+        } else if (response.status == 429){
+            // send user to "too much requests sent to server" page
+            window.location.href = '/429'
+        }
         else {
             console.log('can not fing page')
         }
@@ -132,6 +138,10 @@
             divPages.insertBefore(btn, document.getElementById('btnAddNewPage'))
             pageClick(btn)
             return newPage;
+        }
+        else if (response.status == 429) {
+            // send user to "too much requests sent to server" page
+            window.location.href = '/429'
         }
     }
 
@@ -173,7 +183,11 @@
             //saved message to user
             currentPage.title = pageTitle
             document.querySelector(".pages .selected").innerHTML = pageTitle
+        } else if (response.status == 429) {
+            // send user to "too much requests sent to server" page
+            window.location.href = '/429'
         }
+        
     }
 
     async function deletePage() {
@@ -190,6 +204,9 @@
             // window.location.reload()
             let btnPage = document.querySelector('.page[data-page="'+ currentPage._id +'"]').remove() 
             await loadFirstPage()
+        } else if (response.status == 429){
+            // send user to "too much requests sent to server" page
+            window.location.href = '/429'
         }
     }
 
@@ -207,6 +224,9 @@
             })
         if(response.status === 200) {
             window.location.href = '/notes'
+        } else if (response.status == 429){
+            // send user to "too much requests sent to server" page
+            window.location.href = '/429'
         }
     }
 
@@ -224,10 +244,10 @@
         }
     }
 
-    let note = JSON.parse('<%- JSON.stringify(locals.note) %>')
-    loadFirstPage()
-
     function goToNotes() {
         window.location = '/notes'
     }
+
+    let note = JSON.parse('<%- JSON.stringify(locals.note) %>')
+    loadFirstPage().then()
 </script>
