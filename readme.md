@@ -3,7 +3,7 @@ SecretMemos project
 exporting database
 mongodump --db=notepass --archive=notepassdb
 
-copy from contasiner to local folder
+copy from container to local folder
 docker cp mongodb_container:/notepassdb .
 
 copy from ssh location
