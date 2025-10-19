@@ -70,7 +70,11 @@
             console.error(err)
         }
     }
+    
+    if('<%-locals.isAuthenticated %>' === true.toString()) {        
+        getUserNotesCount()
+        getUserMemosCount()
+    }
 
-    getUserNotesCount()
-    getUserMemosCount()
+    
 </script>

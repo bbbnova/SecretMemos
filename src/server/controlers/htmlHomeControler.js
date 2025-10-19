@@ -34,13 +34,14 @@ const getDashboard = async (req, res) => {
 }
 
 const getLogin = (req, res) => { 
-    res.clearCookie("resData");
+    res.clearCookie("resData");    
     res.render('pages/login', { 
         locals: { 
             title: 'Login Secret Notes', 
             nav: 'login',
             css: '/css/login.css'}, 
-            layout: 'layouts/main'
+            layout: 'layouts/main',
+            requestedUrl: req.query.requestedUrl ? req.query.requestedUrl : null
         });
 }
 
@@ -51,6 +52,8 @@ const getLogout = (req, res) => {
 }
 
 const postLogin = async (req, res) => { 
+    // console.log(req.query.requestedUrl);
+
     let loginData = req.body;
     let user = await User.findOne({email: loginData.email, passwordHash: loginData.passwordHash});
     if(user) { 

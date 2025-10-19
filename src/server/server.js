@@ -1,4 +1,5 @@
 const express = require('express');
+const expressLayouts = require('express-ejs-layouts');
 const rateLimit = require('express-rate-limit')
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser'); 
@@ -22,7 +23,6 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json({ limit: '300kb' }));
 app.use(express.urlencoded({ extended: false }));
-var expressLayouts = require('express-ejs-layouts');
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -50,7 +50,7 @@ app.use('/memos', htmlMemosRouter);
 app.use('/notes', htmlNotesRouter);
 
 app.use('/429', (req, res) => {
-    res.status(404).render('pages/429', {layout: 'layouts/main'})
+    res.status(429).render('pages/429', {layout: 'layouts/main'})
 });
 
 app.use('', (req, res) => {

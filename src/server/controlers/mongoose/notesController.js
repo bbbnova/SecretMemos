@@ -26,7 +26,9 @@ const getUserNotesCount = async (req, res) => {
     
         if(notes) {
             res.status(200).json(notes) 
-        } 
+        } else {
+            res.status(200).json(0)
+        }
     } catch(err) {
         console.log(err)
         res.sendStatus(402)

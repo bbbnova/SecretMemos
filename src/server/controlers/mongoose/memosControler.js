@@ -27,9 +27,8 @@ const getUserMemosCount = async (req, res) => {
         if(memos) {
             res.status(200).json(memos) 
         }
-        else {
-            console.log(err)
-            res.sendStatus(500)
+        else {            
+            res.status(200).json(0)
         }
     } catch(err) {
         console.log(err)

@@ -5,7 +5,9 @@ const User = require('../models/userModel')
 const authorizeUser = async (req, res, next) => { 
     
     if(!req.cookies['resData']) {
-        res.redirect('/login')
+        res.redirect('/login?requestedUrl=' + encodeURIComponent(req.originalUrl))
+        //res.redirect('/login')
+
         // res.render('pages/login', { locals: { title: 'Secret Notes', css: '/css/login.css'}, layout: 'layouts/main'});
         // console.log('no token from ip: ' + req.ip)
         return;
