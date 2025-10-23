@@ -57,9 +57,7 @@
 
 .tableWrapper {
     overflow-y: scroll;
-    position: absolute;
     bottom: 20px;
-    top: 100px;
     left: 0;
     right: 0
 }
