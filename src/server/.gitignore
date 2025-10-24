@@ -3,3 +3,4 @@ node_modules
 requests.rest
 secret_key.txt
 iv.txt
+.rest

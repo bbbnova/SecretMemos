@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const userRouter = require('./routers/api/userRouter');
 const memosRouter = require('./routers/api/memosRouter');
 const notesRouter = require('./routers/api/notesRouter');
-const pagesRouter = require('./routers/api/pagesRouter')
+const pagesRouter = require('./routers/api/pagesRouter');
 
 const htmlHomeRouter = require('./routers/html/htmlHomeRouter');
 const htmlMemosRouter = require('./routers/html/htmlMemosRouter');
