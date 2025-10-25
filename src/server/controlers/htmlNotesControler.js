@@ -5,7 +5,7 @@ const Note = require('../models/noteModel')
 const Page = require('../models/pageModel')
 
 const getNotes = async (req, res) => {
-    let notes = await Note.find({}).populate('pages')
+    let notes = await Note.find({user: req.user._id}).populate('pages')
     res.render('pages/notes', {
         locals: {
             title: 'SecretNotes', 
