@@ -175,8 +175,8 @@ const logIn = async (req, res) => {
         if(user)
         {
             let token = secretModule.encrypt(JSON.stringify({
-                "email": user.email, "ip": req.ip, "exp": new Date(new Date().getTime() + 1 * 1000 * 60 * 60)
-            }), process.env.SECRET_KEY)    
+                    "email": user.email, "ip": req.ip, "exp": new Date(new Date().getTime() + 1 * 1000 * 60 * 60)
+                }), process.env.SECRET_KEY)    
             let resData = {
                 "token": token
             }

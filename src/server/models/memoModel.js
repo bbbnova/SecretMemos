@@ -11,7 +11,8 @@ const memoSchema = new mongoose.Schema({
     note: String,
     user: {
       type: mongoose.Types.ObjectId,
-      ref: "User"
+      ref: "User",
+      required: true
     },
     createdAt: {
       type: Date,

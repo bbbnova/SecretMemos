@@ -87,7 +87,8 @@ const addMemo = async (req, res) => {
             email: req.body.email,
             password: req.body.password,
             url: req.body.url,
-            note: req.body.note
+            note: req.body.note,
+            user: req.user._id
         })
         if(memo) {
             res.status(200).json(memo)
