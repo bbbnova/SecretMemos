@@ -23,5 +23,5 @@ export file out of container:
 docker exec mongodb_container sh -c 'exec mongodump --db notepass --gzip --archive' > dump_`date "+%Y-%m-%d"`.gz
 import file in container:
 docker exec mongodb_container sh -c 'exec mongorestore --gzip --archive=/dump_2025-10-23.gz'
-import file put of container:
+import file out of container:
 docker exec -i mongodb_container sh -c 'mongorestore --gzip --archive' < dump_2025-10-23.gz
