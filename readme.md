@@ -18,8 +18,10 @@ in container exec:
 docker container exec -it CONTAINERNAME /bin/sh
 mongorestore --gzip --archive=notepassdb 
 
-from out of container:
-export:
-docker exec 28c88153de2a sh -c 'exec mongodump --db notepass --gzip --archive' > dump_`date "+%Y-%m-%d"`.gz
-import:
-docker exec 9 sh -c 'exec mongorestore --gzip --archive=/dump_2025-10-23.gz'
+
+export file out of container:
+docker exec mongodb_container sh -c 'exec mongodump --db notepass --gzip --archive' > dump_`date "+%Y-%m-%d"`.gz
+import file in container:
+docker exec mongodb_container sh -c 'exec mongorestore --gzip --archive=/dump_2025-10-23.gz'
+import file put of container:
+docker exec -i mongodb_container sh -c 'mongorestore --gzip --archive' < dump_2025-10-23.gz
