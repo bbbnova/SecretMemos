@@ -38,32 +38,30 @@
 }
 
 .notesBar input[type=search] { 
-    margin: 4px;
-	font-size: 12pt;
-	vertical-align: baseline;
-	font-weight: 400;
-	line-height: 1.29;
-	letter-spacing: .16px;
-	border-radius: 5px;	
-	outline: none;
-	/* height: 30px; */
-	border: 1px solid #ccc; 
-	background-color: #fbfbfb;
-	padding: 4px;
-	color: #111; 
+  margin: 4px;
+  font-size: 12pt;
+  vertical-align: baseline;
+  font-weight: 400;
+  line-height: 1.29;
+  letter-spacing: .16px;
+  border-radius: 5px;	
+  outline: none;
+  /* height: 30px; */
+  border: 1px solid #ccc; 
+  background-color: #fbfbfb;
+  padding: 4px;
+  color: #111; 
 }
 
 
 /* end notesBar */
 
 .container {
-    overflow-y: scroll;
-    position: absolute;
-    bottom: 0;
-    top: 90px;
-    left: 0;
-    right: 0;
-    padding: 15px;
+  overflow-y: scroll;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
 }
 
 .note {
